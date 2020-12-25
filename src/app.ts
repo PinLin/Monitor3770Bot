@@ -1,3 +1,11 @@
-const message: string = "Hello World!";
+import { config } from 'dotenv';
+import { Telegraf } from 'telegraf';
 
-console.log(message);
+config();
+
+const bot = new Telegraf(process.env.BOT_TOKEN);
+
+bot.start((ctx) => ctx.reply('Welcome'));
+
+bot.launch();
+console.log("Bot launched successfully!")
