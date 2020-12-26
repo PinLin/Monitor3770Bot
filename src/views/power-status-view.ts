@@ -15,10 +15,10 @@ export function sendPowerStatusView(ctx: TelegrafContext, props: PowerStatusView
   });
 }
 
-export function editPowerStatusView(ctx: TelegrafContext, props: PowerStatusViewProps) {
+export async function editPowerStatusView(ctx: TelegrafContext, props: PowerStatusViewProps) {
   try {
     const { text, inlineKeyboard } = getMessageContent(props);
-    return ctx.editMessageText(text, {
+    return await ctx.editMessageText(text, {
       reply_markup: {
         inline_keyboard: inlineKeyboard,
       },
