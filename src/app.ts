@@ -1,5 +1,7 @@
 import { config } from 'dotenv';
 import { Telegraf } from 'telegraf';
+import { PowerStatusController } from './controllers/power-status-controller';
+import { MachineService } from './services/machine-service';
 import { ping } from './utils/ping';
 import { ssh } from './utils/ssh';
 
@@ -11,6 +13,11 @@ const PASSWORD = process.env.TARGET_PASSWORD;
 const SSH_PORT = process.env.TARGET_SSH_PORT;
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+
+const machine = new MachineService(IP_ADDRESS);
+const powerStatusController = new PowerStatusController(machine);
+
+bot.command('powerStatus', (ctx) => powerStatusController.main(ctx));
 
 bot.start((ctx) => ctx.reply('Welcome'));
 bot.hears('/ping', async (ctx) => ctx.reply(`Alive: ${await ping(IP_ADDRESS)}`));
