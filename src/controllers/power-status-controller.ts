@@ -1,5 +1,6 @@
 import { TelegrafContext } from 'telegraf/typings/context';
 import { MachineService } from '../services/machine-service';
+import { editPowerStatusView, sendPowerStatusView } from '../views/power-status-view';
 
 export class PowerStatusController {
   constructor(
@@ -10,9 +11,13 @@ export class PowerStatusController {
     const isPowerOn = await this.machine.isPowerOn();
     const upTime = await this.machine.getUpTime();
 
-    return ctx.reply("⚡️ 電源狀態\n" +
-      "\n" +
-      `電源狀態：${isPowerOn ? "已開機 ☀️" : "已關機 🌙"}\n` +
-      `運作時間：${upTime.days} 天 ${upTime.hours} 時 ${upTime.minutes} 分 ${upTime.seconds} 秒\n`);
+    return sendPowerStatusView(ctx, { isPowerOn, upTime });
+  }
+
+  async refresh(ctx: TelegrafContext) {
+    const isPowerOn = await this.machine.isPowerOn();
+    const upTime = await this.machine.getUpTime();
+
+    return editPowerStatusView(ctx, { isPowerOn, upTime });
   }
 }

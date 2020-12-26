@@ -16,6 +16,7 @@ const machine = new MachineService(IP_ADDRESS, USERNAME, PASSWORD, Number(SSH_PO
 const powerStatusController = new PowerStatusController(machine);
 
 bot.command('powerStatus', (ctx) => powerStatusController.main(ctx));
+bot.action('refreshPowerStatus', (ctx) => powerStatusController.refresh(ctx));
 
 bot.catch((err) => {
   console.log("Oops, an error occured: ", err);
