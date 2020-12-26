@@ -1,3 +1,4 @@
+import { OnlineUser } from '../models/online-user';
 import { UpTime } from '../models/up-time';
 import { ping } from '../utils/ping';
 import { ssh } from '../utils/ssh';
@@ -46,6 +47,47 @@ export class MachineService {
         minutes: 0,
         seconds: 0,
       } as UpTime;
+    }
+  }
+
+  async getOnlineUsers() {
+    console.log("[MachineService] Getting online users...")
+
+    try {
+      const { stdout } = await ssh({
+        host: this.ipAddress,
+        port: this.sshPort,
+        username: this.username,
+        password: this.password,
+      }, 'query user');
+
+      const userStrings = stdout.split('\n');
+      userStrings.splice(0, 1);
+      userStrings.splice(userStrings.length - 1, 1);
+      return userStrings.map((userString) => {
+        const fields = [] as string[];
+        userString.split(' ').forEach((field) => {
+          if (field != '') {
+            fields.push(field);
+          }
+        });
+
+        const [year, month, day] = fields[fields.length - 3].split('/').map((s) => Number(s));
+        let [hour, minute] = fields[fields.length - 1].split(':').map((s) => Number(s));
+        if (fields[fields.length - 2] != '�W��') {
+          hour += 12;
+        }
+        const loginTime = new Date();
+        loginTime.setFullYear(year, month - 1, day);
+        loginTime.setHours(hour, minute);
+        return {
+          name: fields[0],
+          isConnected: fields[fields.length - 5] == 'Active',
+          loginTime,
+        } as OnlineUser;
+      })
+    } catch (e) {
+      return [];
     }
   }
 }
