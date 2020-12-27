@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import { Telegraf } from 'telegraf';
+import { OverviewController } from './controllers/overview-controller';
 import { PowerStatusController } from './controllers/power-status-controller';
 import { UserStatusController } from './controllers/user-status-controller';
 import { MachineService } from './services/machine-service';
@@ -30,9 +31,12 @@ bot.use((ctx, next) => {
 });
 
 const machine = new MachineService(IP_ADDRESS, USERNAME, PASSWORD, Number(SSH_PORT));
+const overviewController = new OverviewController(machine);
 const powerStatusController = new PowerStatusController(machine);
 const userStatusController = new UserStatusController(machine);
 
+bot.start((ctx) => overviewController.main(ctx));
+bot.action('refreshOverview', (ctx) => overviewController.refresh(ctx));
 bot.command('powerStatus', (ctx) => powerStatusController.main(ctx));
 bot.action('refreshPowerStatus', (ctx) => powerStatusController.refresh(ctx));
 bot.command('userStatus', (ctx) => userStatusController.main(ctx));
