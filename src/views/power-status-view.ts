@@ -34,7 +34,7 @@ function getMessageContent(props: PowerStatusViewProps) {
     "\n" +
     `電源狀態：${props.isPowerOn ? "已開機 ☀️" : "已關機 🌙"}\n` +
     `運作時間：${props.upTime.days} 天 ${props.upTime.hours} 時 ${props.upTime.minutes} 分 ${props.upTime.seconds} 秒\n` +
-    `➖➖➖➖➖➖➖➖➖➖\n`;
+    "➖➖➖➖➖➖➖➖➖➖\n";
   const inlineKeyboard = [
     [{ text: '🔁 重新整理', callback_data: 'refreshPowerStatus' }],
   ];

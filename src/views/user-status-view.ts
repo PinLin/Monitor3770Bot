@@ -34,7 +34,7 @@ function getMessageContent(props: UserStatusViewProps) {
   const text = "👤 使用者列表\n" +
     "\n" +
     (props.onlineUsers.length == 0 ? "目前沒有已登入的使用者\n" : "目前已登入的使用者：\n" + parseOnlineUsers(props.onlineUsers)) +
-    `➖➖➖➖➖➖➖➖➖➖\n`;
+    "➖➖➖➖➖➖➖➖➖➖\n";
   const inlineKeyboard = [
     [{ text: '🔁 重新整理', callback_data: 'refreshUserStatus' }],
   ];
