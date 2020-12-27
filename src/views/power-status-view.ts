@@ -1,7 +1,7 @@
 import { TelegrafContext } from 'telegraf/typings/context';
 import { UpTime } from '../models/up-time';
 
-interface PowerStatusViewProps {
+export interface PowerStatusViewProps {
   isPowerOn: boolean;
   upTime: UpTime;
 }

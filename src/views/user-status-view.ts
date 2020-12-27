@@ -1,7 +1,7 @@
 import { TelegrafContext } from 'telegraf/typings/context';
 import { OnlineUser } from '../models/online-user';
 
-interface UserStatusViewProps {
+export interface UserStatusViewProps {
   onlineUsers: OnlineUser[];
 }
 

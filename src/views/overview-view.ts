@@ -1,6 +1,6 @@
 import { TelegrafContext } from 'telegraf/typings/context';
 
-interface OverviewViewProps {
+export interface OverviewViewProps {
   ip: string;
   isPowerOn: boolean;
   onlineUserNumber: number;

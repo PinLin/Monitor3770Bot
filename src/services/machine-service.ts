@@ -5,6 +5,7 @@ import { ssh } from '../utils/ssh';
 
 export class MachineService {
   constructor(
+    public name: string,
     public ipAddress: string,
     private username: string,
     private password: string,

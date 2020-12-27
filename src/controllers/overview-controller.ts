@@ -1,17 +1,25 @@
 import { TelegrafContext } from "telegraf/typings/context";
 import { MachineService } from "../services/machine-service";
+import { sendKeyboardView } from "../views/keyborad-view";
 import { editOverviewView, sendOverviewView } from "../views/overview-view";
 
 export class OverviewController {
   constructor(
-    private machineService: MachineService,
+    private machine: MachineService,
   ) { }
 
   async main(ctx: TelegrafContext) {
-    const ipAddress = this.machineService.ipAddress;
+    await sendKeyboardView(ctx, {
+      computerName: this.machine.name,
+      keyboard: [
+        [{ text: '⚡️ 電源' }, { text: '👤 使用者' }],
+      ],
+    });
+
+    const ipAddress = this.machine.ipAddress;
     const [isPowerOn, onlineUsers] = await Promise.all([
-      this.machineService.isPowerOn(),
-      this.machineService.getOnlineUsers(),
+      this.machine.isPowerOn(),
+      this.machine.getOnlineUsers(),
     ]);
 
     return sendOverviewView(ctx, {
@@ -21,10 +29,10 @@ export class OverviewController {
   }
 
   async refresh(ctx: TelegrafContext) {
-    const ipAddress = this.machineService.ipAddress;
+    const ipAddress = this.machine.ipAddress;
     const [isPowerOn, onlineUsers] = await Promise.all([
-      this.machineService.isPowerOn(),
-      this.machineService.getOnlineUsers(),
+      this.machine.isPowerOn(),
+      this.machine.getOnlineUsers(),
     ]);
 
     return editOverviewView(ctx, {
