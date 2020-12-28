@@ -9,21 +9,20 @@ export class UserStatusController {
   ) { }
 
   async main(ctx: TelegrafContext) {
+    const onlineUsers = await this.machine.getOnlineUsers();
+
     await sendKeyboardView(ctx, {
       computerName: this.machine.name,
       keyboard: [
         [{ text: '📊 總覽' }],
       ],
     });
-
-    return sendUserStatusView(ctx, {
-      onlineUsers: await this.machine.getOnlineUsers(),
-    });
+    return sendUserStatusView(ctx, { onlineUsers });
   }
 
   async refresh(ctx: TelegrafContext) {
-    return editUserStatusView(ctx, {
-      onlineUsers: await this.machine.getOnlineUsers(),
-    });
+    const onlineUsers = await this.machine.getOnlineUsers();
+
+    return editUserStatusView(ctx, { onlineUsers });
   }
 }

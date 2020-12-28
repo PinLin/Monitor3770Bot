@@ -10,6 +10,9 @@ export class PowerStatusController {
   ) { }
 
   async main(ctx: TelegrafContext) {
+    const isPowerOn = await this.machine.isPowerOn();
+    const upTime = await this.machine.getUpTime();
+
     await sendKeyboardView(ctx, {
       computerName: this.machine.name,
       keyboard: [
@@ -17,10 +20,6 @@ export class PowerStatusController {
         [{ text: '📊 總覽' }],
       ],
     });
-
-    const isPowerOn = await this.machine.isPowerOn();
-    const upTime = await this.machine.getUpTime();
-
     return sendPowerStatusView(ctx, { isPowerOn, upTime });
   }
 
