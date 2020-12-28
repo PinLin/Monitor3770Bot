@@ -11,6 +11,7 @@ const TOKEN = process.env.BOT_TOKEN;
 const ALLOW_LIST = process.env.BOT_ALLOW_LIST ?? '';
 const NAME = process.env.TARGET_NAME || 'Unnamed';
 const IP_ADDRESS = process.env.TARGET_IP_ADDRESS;
+const MAC_ADDRESS = process.env.TARGET_MAC_ADDRESS;
 const USERNAME = process.env.TARGET_USERNAME;
 const PASSWORD = process.env.TARGET_PASSWORD;
 const SSH_PORT = process.env.TARGET_SSH_PORT ?? '22';
@@ -31,7 +32,7 @@ bot.use((ctx, next) => {
   }
 });
 
-const machine = new MachineService(NAME, IP_ADDRESS, USERNAME, PASSWORD, Number(SSH_PORT));
+const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS, USERNAME, PASSWORD, Number(SSH_PORT));
 const overviewController = new OverviewController(machine);
 const powerStatusController = new PowerStatusController(machine);
 const userStatusController = new UserStatusController(machine);
@@ -42,6 +43,8 @@ bot.action('refreshOverview', (ctx) => overviewController.refresh(ctx));
 bot.command('powerStatus', (ctx) => powerStatusController.main(ctx));
 bot.hears('⚡️ 電源', (ctx) => powerStatusController.main(ctx));
 bot.action('refreshPowerStatus', (ctx) => powerStatusController.refresh(ctx));
+bot.command('powerOn', (ctx) => powerStatusController.powerOn(ctx));
+bot.hears('🏙 開機', (ctx) => powerStatusController.powerOn(ctx));
 bot.command('userStatus', (ctx) => userStatusController.main(ctx));
 bot.hears('👤 使用者', (ctx) => userStatusController.main(ctx));
 bot.action('refreshUserStatus', (ctx) => userStatusController.refresh(ctx));

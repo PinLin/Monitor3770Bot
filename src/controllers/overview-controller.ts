@@ -16,27 +16,27 @@ export class OverviewController {
       ],
     });
 
-    const ipAddress = this.machine.ipAddress;
+    const { ipAddress, macAddress } = this.machine;
     const [isPowerOn, onlineUsers] = await Promise.all([
       this.machine.isPowerOn(),
       this.machine.getOnlineUsers(),
     ]);
 
     return sendOverviewView(ctx, {
-      ip: ipAddress, isPowerOn,
+      ipAddress, macAddress, isPowerOn,
       onlineUserNumber: onlineUsers.length,
     });
   }
 
   async refresh(ctx: TelegrafContext) {
-    const ipAddress = this.machine.ipAddress;
+    const { ipAddress, macAddress } = this.machine;
     const [isPowerOn, onlineUsers] = await Promise.all([
       this.machine.isPowerOn(),
       this.machine.getOnlineUsers(),
     ]);
 
     return editOverviewView(ctx, {
-      ip: ipAddress, isPowerOn,
+      ipAddress, macAddress, isPowerOn,
       onlineUserNumber: onlineUsers.length,
     });
   }

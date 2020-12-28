@@ -1,3 +1,4 @@
+import { wake } from 'wake_on_lan';
 import { OnlineUser } from '../models/online-user';
 import { UpTime } from '../models/up-time';
 import { ping } from '../utils/ping';
@@ -7,6 +8,7 @@ export class MachineService {
   constructor(
     public name: string,
     public ipAddress: string,
+    public macAddress: string,
     private username: string,
     private password: string,
     private sshPort: number,
@@ -16,6 +18,25 @@ export class MachineService {
     console.log("[MachineService] Getting power on status...")
 
     return ping(this.ipAddress);
+  }
+
+  async powerOn() {
+    console.log("[MachineService] Powering on...")
+
+    try {
+      await new Promise<void>((res, rej) => {
+        wake(this.macAddress, (err) => {
+          if (err) {
+            rej(err);
+          } else {
+            res();
+          }
+        });
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   async getUpTime() {

@@ -1,7 +1,8 @@
 import { TelegrafContext } from 'telegraf/typings/context';
 
 export interface OverviewViewProps {
-  ip: string;
+  ipAddress: string;
+  macAddress: string;
   isPowerOn: boolean;
   onlineUserNumber: number;
 }
@@ -34,7 +35,8 @@ export async function editOverviewView(ctx: TelegrafContext, props: OverviewView
 function getMessageContent(props: OverviewViewProps) {
   const text = "📊 狀態總覽\n" +
     "\n" +
-    `IP： \`${props.ip}\`\n` +
+    `IP 位址： \`${props.ipAddress}\`\n` +
+    `MAC 位址： \`${props.macAddress}\`\n` +
     "\n" +
     `電源狀態：${props.isPowerOn ? "已開機 ☀️" : "已關機 🌙"}\n` +
     "\n" +
