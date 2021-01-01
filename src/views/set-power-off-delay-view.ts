@@ -8,7 +8,7 @@ export function sendSetPowerOffDelayView(ctx: BotContext) {
       resize_keyboard: true,
       keyboard: [
         [{ text: '🔙 取消' }],
-        [{ text: '10 分鐘' }, { text: '5 分鐘' }, { text: '🚨 馬上' }],
+        [{ text: '30 分鐘' }, { text: '🚨 馬上' }, { text: '🔄 重設' }],
       ],
     },
   });

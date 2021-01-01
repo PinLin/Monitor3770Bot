@@ -4,6 +4,7 @@ import { sendPowerOnView } from '../views/power-on-view';
 import { editPowerStatusView, sendPowerStatusView } from '../views/power-status-view';
 import { BotContext } from '../interfaces/bot-context';
 import { sendPowerOffView } from '../views/power-off-view';
+import { sendCancelPowerOffView } from '../views/cancel-power-off-view';
 
 export class PowerStatusController {
   constructor(
@@ -41,6 +42,11 @@ export class PowerStatusController {
     ctx.session.state = '';
 
     const { text } = ctx.message;
+    if (text == '🔄 重設') {
+      const success = await this.machine.cancelPowerOff();
+
+      return sendCancelPowerOffView(ctx, { success });
+    }
     let minutes = NaN;
     if (text == '🚨 馬上') {
       minutes = 0;

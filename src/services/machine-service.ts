@@ -56,6 +56,23 @@ export class MachineService {
     }
   }
 
+  async cancelPowerOff() {
+    console.log("[MachineService] Canceling power-off...");
+
+    try {
+      await ssh({
+        host: this.ipAddress,
+        port: this.sshPort,
+        username: this.username,
+        password: this.password,
+      }, 'shutdown -a');
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async getUpTime() {
     console.log("[MachineService] Getting uptime...");
 
