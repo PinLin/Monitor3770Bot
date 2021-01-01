@@ -31,6 +31,9 @@ bot.use((ctx, next) => {
     console.log(`Denied actions by ${username} (${id})`);
     ctx.reply(`🔒 此帳號（ \`${id}\` ）不在允許清單內，沒有權限使用。`, {
       parse_mode: 'Markdown',
+      reply_markup: {
+        remove_keyboard: true,
+      },
     });
   }
 });
