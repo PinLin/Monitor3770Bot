@@ -1,12 +1,18 @@
 import { BotContext } from '../interfaces/bot-context';
 import { OnlineUser } from '../models/online-user';
+import { sendMachineNameView } from './machine-name-view';
 
 export interface UserStatusViewProps {
+  machineName?: string;
   onlineUsers: OnlineUser[];
 }
 
-export function sendUserStatusView(ctx: BotContext, props: UserStatusViewProps) {
-  const { text, inlineKeyboard } = getMessageContent(props);
+export async function sendUserStatusView(ctx: BotContext, props: UserStatusViewProps) {
+  const { text, keyboard, inlineKeyboard } = getMessageContent(props);
+  await sendMachineNameView(ctx, {
+    machineName: props.machineName,
+    keyboard,
+  });
   return ctx.reply(text, {
     parse_mode: 'Markdown',
     reply_markup: {
@@ -35,11 +41,14 @@ function getMessageContent(props: UserStatusViewProps) {
     "\n" +
     (props.onlineUsers.length == 0 ? "目前沒有已登入的使用者\n" : "目前已登入的使用者：\n" + parseOnlineUsers(props.onlineUsers)) +
     "➖➖➖➖➖➖➖➖➖➖\n";
+  const keyboard = [
+    [{ text: '📊 總覽' }],
+  ];
   const inlineKeyboard = [
     [{ text: '🔁 重新整理', callback_data: 'refreshUserStatus' }],
   ];
 
-  return { text, inlineKeyboard };
+  return { text, keyboard, inlineKeyboard };
 }
 
 function parseOnlineUsers(onlineUsers: UserStatusViewProps['onlineUsers']) {

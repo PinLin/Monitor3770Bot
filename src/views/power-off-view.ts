@@ -2,7 +2,7 @@ import { BotContext } from '../interfaces/bot-context';
 
 export interface PowerOffViewProps {
   success: boolean;
-  minutes: number;
+  minutes?: number;
 }
 
 export function sendPowerOffView(ctx: BotContext, props: PowerOffViewProps) {

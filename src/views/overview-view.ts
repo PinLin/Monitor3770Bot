@@ -1,14 +1,20 @@
 import { BotContext } from '../interfaces/bot-context';
+import { sendMachineNameView } from './machine-name-view';
 
 export interface OverviewViewProps {
+  machineName?: string;
   ipAddress: string;
   macAddress: string;
   isPowerOn: boolean;
   onlineUserNumber: number;
 }
 
-export function sendOverviewView(ctx: BotContext, props: OverviewViewProps) {
-  const { text, inlineKeyboard } = getMessageContent(props);
+export async function sendOverviewView(ctx: BotContext, props: OverviewViewProps) {
+  const { text, keyboard, inlineKeyboard } = getMessageContent(props);
+  await sendMachineNameView(ctx, {
+    machineName: props.machineName,
+    keyboard,
+  });
   return ctx.reply(text, {
     parse_mode: 'Markdown',
     reply_markup: {
@@ -42,9 +48,12 @@ function getMessageContent(props: OverviewViewProps) {
     "\n" +
     `目前共有 ${props.onlineUserNumber} 位使用者登入\n` +
     "➖➖➖➖➖➖➖➖➖➖\n";
+  const keyboard = [
+    [{ text: '⚡️ 電源' }, { text: '👤 使用者' }],
+  ];
   const inlineKeyboard = [
     [{ text: '🔁 重新整理', callback_data: 'refreshOverview' }],
   ];
 
-  return { text, inlineKeyboard };
+  return { text, keyboard, inlineKeyboard };
 }

@@ -1,13 +1,19 @@
 import { BotContext } from '../interfaces/bot-context';
 import { UpTime } from '../models/up-time';
+import { sendMachineNameView } from './machine-name-view';
 
 export interface PowerStatusViewProps {
+  machineName?: string;
   isPowerOn: boolean;
   upTime: UpTime;
 }
 
-export function sendPowerStatusView(ctx: BotContext, props: PowerStatusViewProps) {
-  const { text, inlineKeyboard } = getMessageContent(props);
+export async function sendPowerStatusView(ctx: BotContext, props: PowerStatusViewProps) {
+  const { text, keyboard, inlineKeyboard } = getMessageContent(props);
+  await sendMachineNameView(ctx, {
+    machineName: props.machineName,
+    keyboard,
+  });
   return ctx.reply(text, {
     reply_markup: {
       inline_keyboard: inlineKeyboard,
@@ -35,9 +41,13 @@ function getMessageContent(props: PowerStatusViewProps) {
     `電源狀態：${props.isPowerOn ? "已開機 ☀️" : "已關機 🌙"}\n` +
     `運作時間：${props.upTime.days} 天 ${props.upTime.hours} 時 ${props.upTime.minutes} 分 ${props.upTime.seconds} 秒\n` +
     "➖➖➖➖➖➖➖➖➖➖\n";
+  const keyboard = [
+    [{ text: '🏙 開機' }, { text: '🌆 關機' }],
+    [{ text: '📊 總覽' }],
+  ];
   const inlineKeyboard = [
     [{ text: '🔁 重新整理', callback_data: 'refreshPowerStatus' }],
   ];
 
-  return { text, inlineKeyboard };
+  return { text, keyboard, inlineKeyboard };
 }

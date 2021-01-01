@@ -1,5 +1,4 @@
 import { MachineService } from '../services/machine-service';
-import { sendKeyboardView } from '../views/keyborad-view';
 import { sendSetPowerOffDelayView } from '../views/set-power-off-delay-view';
 import { sendPowerOnView } from '../views/power-on-view';
 import { editPowerStatusView, sendPowerStatusView } from '../views/power-status-view';
@@ -12,17 +11,11 @@ export class PowerStatusController {
   ) { }
 
   async main(ctx: BotContext) {
+    const machineName = this.machine.name;
     const isPowerOn = await this.machine.isPowerOn();
     const upTime = await this.machine.getUpTime();
 
-    await sendKeyboardView(ctx, {
-      computerName: this.machine.name,
-      keyboard: [
-        [{ text: '🏙 開機' }, { text: '🌆 關機' }],
-        [{ text: '📊 總覽' }],
-      ],
-    });
-    return sendPowerStatusView(ctx, { isPowerOn, upTime });
+    return sendPowerStatusView(ctx, { machineName, isPowerOn, upTime });
   }
 
   async refresh(ctx: BotContext) {
@@ -55,7 +48,7 @@ export class PowerStatusController {
       minutes = Number(text.split('分鐘')[0]);
     }
     if (Number.isNaN(minutes)) {
-      return sendPowerOffView(ctx, { success: false, minutes });
+      return sendPowerOffView(ctx, { success: false });
     }
     const success = await this.machine.powerOff(minutes);
 

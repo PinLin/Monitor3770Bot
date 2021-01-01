@@ -1,6 +1,5 @@
 import { BotContext } from '../interfaces/bot-context';
 import { MachineService } from '../services/machine-service';
-import { sendKeyboardView } from '../views/keyborad-view';
 import { editUserStatusView, sendUserStatusView } from '../views/user-status-view';
 
 export class UserStatusController {
@@ -9,15 +8,10 @@ export class UserStatusController {
   ) { }
 
   async main(ctx: BotContext) {
+    const machineName = this.machine.name;
     const onlineUsers = await this.machine.getOnlineUsers();
 
-    await sendKeyboardView(ctx, {
-      computerName: this.machine.name,
-      keyboard: [
-        [{ text: '📊 總覽' }],
-      ],
-    });
-    return sendUserStatusView(ctx, { onlineUsers });
+    return sendUserStatusView(ctx, { machineName, onlineUsers });
   }
 
   async refresh(ctx: BotContext) {
