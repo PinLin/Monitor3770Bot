@@ -1,6 +1,7 @@
 import { TelegrafContext } from 'telegraf/typings/context';
 import { MachineService } from '../services/machine-service';
 import { sendKeyboardView } from '../views/keyborad-view';
+import { sendPowerOffView } from '../views/power-off-view';
 import { sendPowerOnView } from '../views/power-on-view';
 import { editPowerStatusView, sendPowerStatusView } from '../views/power-status-view';
 
@@ -16,7 +17,7 @@ export class PowerStatusController {
     await sendKeyboardView(ctx, {
       computerName: this.machine.name,
       keyboard: [
-        [{ text: '🏙 開機' }],
+        [{ text: '🏙 開機' }, { text: '🌆 關機' }],
         [{ text: '📊 總覽' }],
       ],
     });
@@ -34,5 +35,9 @@ export class PowerStatusController {
     const success = await this.machine.powerOn();
 
     return sendPowerOnView(ctx, { success });
+  }
+
+  async powerOff(ctx: TelegrafContext) {
+    return sendPowerOffView(ctx);
   }
 }
