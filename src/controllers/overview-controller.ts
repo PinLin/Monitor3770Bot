@@ -1,14 +1,14 @@
-import { TelegrafContext } from "telegraf/typings/context";
-import { MachineService } from "../services/machine-service";
-import { sendKeyboardView } from "../views/keyborad-view";
-import { editOverviewView, sendOverviewView } from "../views/overview-view";
+import { BotContext } from '../interfaces/bot-context';
+import { MachineService } from '../services/machine-service';
+import { sendKeyboardView } from '../views/keyborad-view';
+import { editOverviewView, sendOverviewView } from '../views/overview-view';
 
 export class OverviewController {
   constructor(
     private machine: MachineService,
   ) { }
 
-  async main(ctx: TelegrafContext) {
+  async main(ctx: BotContext) {
     const { ipAddress, macAddress } = this.machine;
     const [isPowerOn, onlineUsers] = await Promise.all([
       this.machine.isPowerOn(),
@@ -27,7 +27,7 @@ export class OverviewController {
     });
   }
 
-  async refresh(ctx: TelegrafContext) {
+  async refresh(ctx: BotContext) {
     const { ipAddress, macAddress } = this.machine;
     const [isPowerOn, onlineUsers] = await Promise.all([
       this.machine.isPowerOn(),

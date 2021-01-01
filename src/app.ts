@@ -1,8 +1,9 @@
 import { config } from 'dotenv';
-import { Telegraf } from 'telegraf';
+import { session, Telegraf } from 'telegraf';
 import { OverviewController } from './controllers/overview-controller';
 import { PowerStatusController } from './controllers/power-status-controller';
 import { UserStatusController } from './controllers/user-status-controller';
+import { BotContext } from './interfaces/bot-context';
 import { MachineService } from './services/machine-service';
 
 config();
@@ -16,7 +17,9 @@ const USERNAME = process.env.TARGET_USERNAME;
 const PASSWORD = process.env.TARGET_PASSWORD;
 const SSH_PORT = process.env.TARGET_SSH_PORT ?? '22';
 
-const bot = new Telegraf(TOKEN);
+const bot = new Telegraf<BotContext>(TOKEN);
+
+bot.use(session());
 
 bot.use((ctx, next) => {
   const id = ctx.from.id;
@@ -37,19 +40,34 @@ const overviewController = new OverviewController(machine);
 const powerStatusController = new PowerStatusController(machine);
 const userStatusController = new UserStatusController(machine);
 
+bot.action('refreshOverview', (ctx) => overviewController.refresh(ctx));
+bot.action('refreshPowerStatus', (ctx) => powerStatusController.refresh(ctx));
+bot.action('refreshUserStatus', (ctx) => userStatusController.refresh(ctx));
+bot.hears('🔙 取消', (ctx) => {
+  ctx.session.state = '';
+  return overviewController.main(ctx);
+});
+bot.command('cancel', (ctx) => {
+  ctx.session.state = '';
+  return overviewController.main(ctx);
+});
+bot.on('message', (ctx, next) => {
+  const { state } = ctx.session;
+  if (state == 'setPowerOffDelay') {
+    return powerStatusController.powerOff(ctx);
+  }
+  next();
+});
 bot.start((ctx) => overviewController.main(ctx));
 bot.hears('📊 總覽', (ctx) => overviewController.main(ctx));
-bot.action('refreshOverview', (ctx) => overviewController.refresh(ctx));
 bot.command('powerStatus', (ctx) => powerStatusController.main(ctx));
 bot.hears('⚡️ 電源', (ctx) => powerStatusController.main(ctx));
-bot.action('refreshPowerStatus', (ctx) => powerStatusController.refresh(ctx));
 bot.command('powerOn', (ctx) => powerStatusController.powerOn(ctx));
 bot.hears('🏙 開機', (ctx) => powerStatusController.powerOn(ctx));
-bot.command('powerOff', (ctx) => powerStatusController.powerOff(ctx));
-bot.hears('🌆 關機', (ctx) => powerStatusController.powerOff(ctx));
+bot.command('powerOff', (ctx) => powerStatusController.setPowerOffDelay(ctx));
+bot.hears('🌆 關機', (ctx) => powerStatusController.setPowerOffDelay(ctx));
 bot.command('userStatus', (ctx) => userStatusController.main(ctx));
 bot.hears('👤 使用者', (ctx) => userStatusController.main(ctx));
-bot.action('refreshUserStatus', (ctx) => userStatusController.refresh(ctx));
 
 bot.catch((err) => {
   console.log("Oops, an error occured: ", err);

@@ -1,4 +1,4 @@
-import { TelegrafContext } from 'telegraf/typings/context';
+import { BotContext } from '../interfaces/bot-context';
 import { UpTime } from '../models/up-time';
 
 export interface PowerStatusViewProps {
@@ -6,7 +6,7 @@ export interface PowerStatusViewProps {
   upTime: UpTime;
 }
 
-export function sendPowerStatusView(ctx: TelegrafContext, props: PowerStatusViewProps) {
+export function sendPowerStatusView(ctx: BotContext, props: PowerStatusViewProps) {
   const { text, inlineKeyboard } = getMessageContent(props);
   return ctx.reply(text, {
     reply_markup: {
@@ -15,7 +15,7 @@ export function sendPowerStatusView(ctx: TelegrafContext, props: PowerStatusView
   });
 }
 
-export async function editPowerStatusView(ctx: TelegrafContext, props: PowerStatusViewProps) {
+export async function editPowerStatusView(ctx: BotContext, props: PowerStatusViewProps) {
   try {
     const { text, inlineKeyboard } = getMessageContent(props);
     return await ctx.editMessageText(text, {

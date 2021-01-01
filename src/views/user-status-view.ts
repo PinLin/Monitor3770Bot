@@ -1,11 +1,11 @@
-import { TelegrafContext } from 'telegraf/typings/context';
+import { BotContext } from '../interfaces/bot-context';
 import { OnlineUser } from '../models/online-user';
 
 export interface UserStatusViewProps {
   onlineUsers: OnlineUser[];
 }
 
-export function sendUserStatusView(ctx: TelegrafContext, props: UserStatusViewProps) {
+export function sendUserStatusView(ctx: BotContext, props: UserStatusViewProps) {
   const { text, inlineKeyboard } = getMessageContent(props);
   return ctx.reply(text, {
     parse_mode: 'Markdown',
@@ -15,7 +15,7 @@ export function sendUserStatusView(ctx: TelegrafContext, props: UserStatusViewPr
   });
 }
 
-export async function editUserStatusView(ctx: TelegrafContext, props: UserStatusViewProps) {
+export async function editUserStatusView(ctx: BotContext, props: UserStatusViewProps) {
   try {
     const { text, inlineKeyboard } = getMessageContent(props);
     return await ctx.editMessageText(text, {

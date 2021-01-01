@@ -1,4 +1,4 @@
-import { TelegrafContext } from 'telegraf/typings/context';
+import { BotContext } from '../interfaces/bot-context';
 
 export interface OverviewViewProps {
   ipAddress: string;
@@ -7,7 +7,7 @@ export interface OverviewViewProps {
   onlineUserNumber: number;
 }
 
-export function sendOverviewView(ctx: TelegrafContext, props: OverviewViewProps) {
+export function sendOverviewView(ctx: BotContext, props: OverviewViewProps) {
   const { text, inlineKeyboard } = getMessageContent(props);
   return ctx.reply(text, {
     parse_mode: 'Markdown',
@@ -17,7 +17,7 @@ export function sendOverviewView(ctx: TelegrafContext, props: OverviewViewProps)
   });
 }
 
-export async function editOverviewView(ctx: TelegrafContext, props: OverviewViewProps) {
+export async function editOverviewView(ctx: BotContext, props: OverviewViewProps) {
   try {
     const { text, inlineKeyboard } = getMessageContent(props);
     return await ctx.editMessageText(text, {

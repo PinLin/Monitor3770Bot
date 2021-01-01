@@ -15,13 +15,13 @@ export class MachineService {
   ) { }
 
   isPowerOn() {
-    console.log("[MachineService] Getting power on status...")
+    console.log("[MachineService] Getting power on status...");
 
     return ping(this.ipAddress);
   }
 
   async powerOn() {
-    console.log("[MachineService] Powering on...")
+    console.log("[MachineService] Powering on...");
 
     try {
       await new Promise<void>((res, rej) => {
@@ -39,8 +39,25 @@ export class MachineService {
     }
   }
 
+  async powerOff(minutes: number) {
+    console.log(`[MachineService] Powering off after ${minutes} minute(s)...`);
+
+    try {
+      await ssh({
+        host: this.ipAddress,
+        port: this.sshPort,
+        username: this.username,
+        password: this.password,
+      }, `shutdown -a & shutdown -s -f -t ${minutes * 60}`);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async getUpTime() {
-    console.log("[MachineService] Getting uptime...")
+    console.log("[MachineService] Getting uptime...");
 
     try {
       const { stdout } = await ssh({
@@ -73,7 +90,7 @@ export class MachineService {
   }
 
   async getOnlineUsers() {
-    console.log("[MachineService] Getting online users...")
+    console.log("[MachineService] Getting online users...");
 
     try {
       const { stdout } = await ssh({

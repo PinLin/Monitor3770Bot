@@ -1,12 +1,12 @@
-import { TelegrafContext } from 'telegraf/typings/context';
 import { KeyboardButton } from 'telegraf/typings/telegram-types';
+import { BotContext } from '../interfaces/bot-context';
 
 export interface KeyboardViewProps {
   computerName: string;
   keyboard: KeyboardButton[][];
 }
 
-export function sendKeyboardView(ctx: TelegrafContext, props: KeyboardViewProps) {
+export function sendKeyboardView(ctx: BotContext, props: KeyboardViewProps) {
   return ctx.reply(`🖥 *${props.computerName}*`, {
     parse_mode: 'Markdown',
     reply_markup: {
