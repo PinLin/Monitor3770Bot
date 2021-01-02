@@ -30,13 +30,9 @@ export function ssh(connectConfig: SshConnectConfig, command: string): Promise<S
       } as SshExecResult;
 
       try {
-        const stream = await promisify(connection.exec).bind(connection)('chcp 65001&' + command);
+        const stream = await promisify(connection.exec).bind(connection)(command);
         stream.on('close', () => {
           connection.end();
-
-          const tempStdout = result.stdout.split('\r\n')
-          tempStdout.splice(0, 1);
-          result.stdout = tempStdout.join('\n');
           res(result);
         }).stdout.on('data', (data) => {
           result.stdout += data;

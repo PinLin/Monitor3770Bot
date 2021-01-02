@@ -112,10 +112,10 @@ export class MachineService {
     console.log("[MachineService] Getting online users...");
 
     try {
-      const { stdout } = await this.executeCommand('query user');
+      const { stdout } = await this.executeCommand('chcp 65001 & query user');
 
-      const userStrings = stdout.split('\n');
-      userStrings.splice(0, 1);
+      const userStrings = stdout.split('\r\n');
+      userStrings.splice(0, 2);
       userStrings.splice(userStrings.length - 1, 1);
       return userStrings.map((userString) => {
         const fields = [] as string[];
