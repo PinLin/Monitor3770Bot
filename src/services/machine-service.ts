@@ -13,20 +13,20 @@ export class MachineService {
     private sshPort: number,
   ) { }
 
-  getConnectConfig() {
-    return {
+  executeCommand(command: string) {
+    return ssh({
       host: this.ipAddress,
       port: this.sshPort,
       username: this.username,
       password: this.password,
-    } as SshConnectConfig;
+    }, command);
   }
 
   async isPowerOn() {
     console.log("[MachineService] Getting power on status...");
 
     try {
-      await ssh(this.getConnectConfig(), 'echo hi');
+      await this.executeCommand('echo hi');
 
       return true;
     } catch (e) {
@@ -57,8 +57,7 @@ export class MachineService {
     console.log(`[MachineService] Powering off after ${minutes} minute(s)...`);
 
     try {
-      await ssh(this.getConnectConfig(),
-        `shutdown -a & shutdown -s -f -t ${minutes * 60}`);
+      await this.executeCommand(`shutdown -a & shutdown -s -f -t ${minutes * 60}`);
 
       return true;
     } catch (e) {
@@ -70,7 +69,7 @@ export class MachineService {
     console.log("[MachineService] Canceling power-off...");
 
     try {
-      await ssh(this.getConnectConfig(), 'shutdown -a');
+      await this.executeCommand('shutdown -a');
 
       return true;
     } catch (e) {
@@ -82,7 +81,7 @@ export class MachineService {
     console.log("[MachineService] Getting uptime...");
 
     try {
-      const { stdout } = await ssh(this.getConnectConfig(),
+      const { stdout } = await this.executeCommand(
         'powershell -c "(get-date) - (gcim Win32_OperatingSystem).LastBootUpTime"');
 
       let upTimeStrings = stdout.split('\n');
@@ -111,7 +110,7 @@ export class MachineService {
     console.log("[MachineService] Getting online users...");
 
     try {
-      const { stdout } = await ssh(this.getConnectConfig(), 'query user');
+      const { stdout } = await this.executeCommand('query user');
 
       const userStrings = stdout.split('\n');
       userStrings.splice(0, 1);
