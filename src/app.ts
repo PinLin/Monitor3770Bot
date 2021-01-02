@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 import { session, Telegraf } from 'telegraf';
 import { OverviewController } from './controllers/overview-controller';
 import { PowerStatusController } from './controllers/power-status-controller';
+import { TestController } from './controllers/test-controller';
 import { UserStatusController } from './controllers/user-status-controller';
 import { BotContext } from './interfaces/bot-context';
 import { MachineService } from './services/machine-service';
@@ -39,6 +40,7 @@ bot.use((ctx, next) => {
 });
 
 const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS, USERNAME, PASSWORD, Number(SSH_PORT));
+const testController = new TestController(machine);
 const overviewController = new OverviewController(machine);
 const powerStatusController = new PowerStatusController(machine);
 const userStatusController = new UserStatusController(machine);
@@ -46,6 +48,7 @@ const userStatusController = new UserStatusController(machine);
 bot.action('refreshOverview', (ctx) => overviewController.refresh(ctx));
 bot.action('refreshPowerStatus', (ctx) => powerStatusController.refresh(ctx));
 bot.action('refreshUserStatus', (ctx) => userStatusController.refresh(ctx));
+bot.command('test', (ctx) => testController.main(ctx));
 bot.hears('🔙 取消', (ctx) => {
   ctx.session.state = '';
   return overviewController.main(ctx);

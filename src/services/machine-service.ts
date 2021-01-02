@@ -14,6 +14,8 @@ export class MachineService {
   ) { }
 
   executeCommand(command: string) {
+    console.log(`[MachineService] Executing command ${command}...`);
+
     return ssh({
       host: this.ipAddress,
       port: this.sshPort,
