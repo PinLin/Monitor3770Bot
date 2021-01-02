@@ -66,13 +66,13 @@ bot.on('message', (ctx, next) => {
 });
 bot.start((ctx) => overviewController.main(ctx));
 bot.hears('📊 總覽', (ctx) => overviewController.main(ctx));
-bot.command('powerStatus', (ctx) => powerStatusController.main(ctx));
+bot.command('powerstatus', (ctx) => powerStatusController.main(ctx));
 bot.hears('⚡️ 電源', (ctx) => powerStatusController.main(ctx));
-bot.command('powerOn', (ctx) => powerStatusController.powerOn(ctx));
+bot.command('poweron', (ctx) => powerStatusController.powerOn(ctx));
 bot.hears('🏙 開機', (ctx) => powerStatusController.powerOn(ctx));
-bot.command('powerOff', (ctx) => powerStatusController.setPowerOffDelay(ctx));
+bot.command('poweroff', (ctx) => powerStatusController.setPowerOffDelay(ctx));
 bot.hears('🌆 關機', (ctx) => powerStatusController.setPowerOffDelay(ctx));
-bot.command('userStatus', (ctx) => userStatusController.main(ctx));
+bot.command('userstatus', (ctx) => userStatusController.main(ctx));
 bot.hears('👤 使用者', (ctx) => userStatusController.main(ctx));
 
 bot.catch((err) => {
