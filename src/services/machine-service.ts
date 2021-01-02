@@ -1,7 +1,7 @@
 import { wake } from 'wake_on_lan';
 import { OnlineUser } from '../models/online-user';
 import { UpTime } from '../models/up-time';
-import { ssh, SshConnectConfig } from '../utils/ssh';
+import { ssh } from '../utils/ssh';
 
 export class MachineService {
   constructor(
