@@ -1,7 +1,6 @@
 import { wake } from 'wake_on_lan';
 import { OnlineUser } from '../models/online-user';
 import { UpTime } from '../models/up-time';
-import { ping } from '../utils/ping';
 import { ssh, SshConnectConfig } from '../utils/ssh';
 
 export class MachineService {
@@ -23,10 +22,16 @@ export class MachineService {
     } as SshConnectConfig;
   }
 
-  isPowerOn() {
+  async isPowerOn() {
     console.log("[MachineService] Getting power on status...");
 
-    return ping(this.ipAddress);
+    try {
+      await ssh(this.getConnectConfig(), 'echo hi');
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   async powerOn() {
