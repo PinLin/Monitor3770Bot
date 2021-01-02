@@ -6,12 +6,14 @@ export interface SshExecResult {
   stderr: string;
 }
 
-export function ssh(connectConfig: {
+export interface SshConnectConfig {
   host: string;
   port: number;
   username: string;
   password: string;
-}, command: string): Promise<SshExecResult> {
+}
+
+export function ssh(connectConfig: SshConnectConfig, command: string): Promise<SshExecResult> {
   const connection = new Client();
 
   return new Promise((res, rej) => {

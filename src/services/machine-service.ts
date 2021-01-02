@@ -2,7 +2,7 @@ import { wake } from 'wake_on_lan';
 import { OnlineUser } from '../models/online-user';
 import { UpTime } from '../models/up-time';
 import { ping } from '../utils/ping';
-import { ssh } from '../utils/ssh';
+import { ssh, SshConnectConfig } from '../utils/ssh';
 
 export class MachineService {
   constructor(
@@ -13,6 +13,15 @@ export class MachineService {
     private password: string,
     private sshPort: number,
   ) { }
+
+  getConnectConfig() {
+    return {
+      host: this.ipAddress,
+      port: this.sshPort,
+      username: this.username,
+      password: this.password,
+    } as SshConnectConfig;
+  }
 
   isPowerOn() {
     console.log("[MachineService] Getting power on status...");
@@ -43,12 +52,8 @@ export class MachineService {
     console.log(`[MachineService] Powering off after ${minutes} minute(s)...`);
 
     try {
-      await ssh({
-        host: this.ipAddress,
-        port: this.sshPort,
-        username: this.username,
-        password: this.password,
-      }, `shutdown -a & shutdown -s -f -t ${minutes * 60}`);
+      await ssh(this.getConnectConfig(),
+        `shutdown -a & shutdown -s -f -t ${minutes * 60}`);
 
       return true;
     } catch (e) {
@@ -60,12 +65,7 @@ export class MachineService {
     console.log("[MachineService] Canceling power-off...");
 
     try {
-      await ssh({
-        host: this.ipAddress,
-        port: this.sshPort,
-        username: this.username,
-        password: this.password,
-      }, 'shutdown -a');
+      await ssh(this.getConnectConfig(), 'shutdown -a');
 
       return true;
     } catch (e) {
@@ -77,12 +77,8 @@ export class MachineService {
     console.log("[MachineService] Getting uptime...");
 
     try {
-      const { stdout } = await ssh({
-        host: this.ipAddress,
-        port: this.sshPort,
-        username: this.username,
-        password: this.password,
-      }, 'powershell -c "(get-date) - (gcim Win32_OperatingSystem).LastBootUpTime"');
+      const { stdout } = await ssh(this.getConnectConfig(),
+        'powershell -c "(get-date) - (gcim Win32_OperatingSystem).LastBootUpTime"');
 
       let upTimeStrings = stdout.split('\n');
       upTimeStrings = upTimeStrings.slice(2, 6);
@@ -110,12 +106,7 @@ export class MachineService {
     console.log("[MachineService] Getting online users...");
 
     try {
-      const { stdout } = await ssh({
-        host: this.ipAddress,
-        port: this.sshPort,
-        username: this.username,
-        password: this.password,
-      }, 'query user');
+      const { stdout } = await ssh(this.getConnectConfig(), 'query user');
 
       const userStrings = stdout.split('\n');
       userStrings.splice(0, 1);
