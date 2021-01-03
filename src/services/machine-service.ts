@@ -55,11 +55,11 @@ export class MachineService {
     }
   }
 
-  async powerOff(minutes: number) {
-    console.log(`[MachineService] Powering off after ${minutes} minute(s)...`);
+  async powerOff(delayMinutes: number) {
+    console.log(`[MachineService] Powering off after ${delayMinutes} minute(s)...`);
 
     try {
-      await this.executeCommand(`shutdown -a & shutdown -s -f -t ${minutes * 60}`);
+      await this.executeCommand(`shutdown -a & shutdown -s -f -t ${delayMinutes * 60}`);
 
       return true;
     } catch (e) {
