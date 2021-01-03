@@ -57,7 +57,7 @@ function parseOnlineUsers(onlineUsers: UserStatusViewProps['onlineUsers']) {
   for (const onlineUser of onlineUsers) {
     result += "\n";
     result += `${index}. *${onlineUser.name}*\n`;
-    result += onlineUser.isConnected ? "    🔷 已連線\n" : "    🔶 中斷連線\n";
+    result += `    ${onlineUser.isConnected ? "🔷 已連線" : "🔶 中斷連線"} /message\\_${onlineUser.name}\n`;
     result += `    登入於 ${onlineUser.loginTime.toLocaleString([], {
       year: 'numeric',
       month: '2-digit',

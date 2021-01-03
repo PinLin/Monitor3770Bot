@@ -62,6 +62,9 @@ bot.on('message', (ctx, next) => {
   if (state == 'setPowerOffDelay') {
     return powerStatusController.powerOff(ctx);
   }
+  if (state == 'setMessageText') {
+    return userStatusController.sendMessage(ctx);
+  }
   next();
 });
 bot.start((ctx) => overviewController.main(ctx));
@@ -74,6 +77,7 @@ bot.command('poweroff', (ctx) => powerStatusController.setPowerOffDelay(ctx));
 bot.hears('🌆 關機', (ctx) => powerStatusController.setPowerOffDelay(ctx));
 bot.command('userstatus', (ctx) => userStatusController.main(ctx));
 bot.hears('👤 使用者', (ctx) => userStatusController.main(ctx));
+bot.hears(/^\/message_/, (ctx) => userStatusController.setMessageText(ctx));
 
 bot.catch((err) => {
   console.log("Oops, an error occured: ", err);

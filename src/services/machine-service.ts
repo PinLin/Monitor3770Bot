@@ -143,4 +143,16 @@ export class MachineService {
       return [];
     }
   }
+
+  async sendMessage(username: string, messageText: string) {
+    console.log(`[MachineService] Sending message to ${username}...`);
+
+    try {
+      await this.executeCommand(`msg ${username} ${messageText}`);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
