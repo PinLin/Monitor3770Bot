@@ -2,19 +2,37 @@
 
 透過 SSH 來管理目標 Windows 電腦的 Telegram Bot
 
-## Install
+## Demo
+
+![demo image](https://imgur.com/iZilozZ.jpg)
+
+## Usage
+
+### `Docker`
 
 ```bash
-npm install
+docker run --name monitor3770bot \
+-e BOT_TOKEN='<BOT_TOKEN>' \
+-e BOT_ALLOW_LIST='<USER1_ID>,<USER2_ID>' \
+-e TARGET_NAME='<COMPUTER_NAME>' \
+-e TARGET_IP_ADDRESS='<IP_ADDRESS>' \
+-e TARGET_MAC_ADDRESS='<MAC_ADDRESS>' \
+-e TARGET_USERNAME='<USERNAME>' \
+-e TARGET_PASSWORD='<PASSWORD>' \
+--restart=always -d \
+--net=host \
+pinlin/monitor3770bot
 ```
 
-## Run
+### Manual
 
 ```bash
-# run on development mode
-npm run start:dev
+# Install dependencies
+npm install
 
-# build and run on production mode
+# Run on development mode
+npm run start:dev
+# Run on production mode
 npm run build
 npm run start
 ```
