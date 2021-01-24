@@ -17,8 +17,5 @@ RUN npm run build
 # Remove devDenpendencies
 RUN npm prune --production
 
-# Specify port app runs on
-EXPOSE 3000
-
 # Run the app
 CMD [ "npm", "run", "start" ]
