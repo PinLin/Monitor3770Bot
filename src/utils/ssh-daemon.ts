@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { config } from 'dotenv';
 import { Client } from 'ssh2';
-import { SshExecResult } from './models/ssh-exec-result';
+import { SshExecResult } from '../models/ssh-exec-result';
 
 config();
 
@@ -12,7 +12,7 @@ const {
 const connection = new Client();
 
 function executeCommand(command: string): Promise<SshExecResult> {
-  console.log('[SshDaemon] Execute command: ' + command);
+  console.log('[SshUtil] Execute command: ' + command);
 
   return new Promise((res, rej) => {
     // 執行指令
@@ -39,38 +39,37 @@ function executeCommand(command: string): Promise<SshExecResult> {
   });
 }
 
-const commandQueue = [] as string[];
+const commandQueue = [] as { uuid: string, command: string }[];
 const commandAddedEvent = new EventEmitter();
 
 // 接收外部要求執行的指令
-process.on('message', (command: string) => {
-  commandQueue.push(command);
+process.on('message', (message: string) => {
+  commandQueue.push(JSON.parse(message));
   commandAddedEvent.emit('start');
 });
 
 // 建立與目標的連線
 connection.on('ready', () => {
-  console.log("[SshDaemon] Connected.");
+  console.log("[SshUtil] Connected.");
 
   (function run() {
-    // 註冊指令增加的事件
     commandAddedEvent.once('start', async () => {
       // 如果指令佇列一直不為空
       while (commandQueue.length > 0) {
         // 取出指令來執行
-        const command = commandQueue.shift();
+        const { uuid, command } = commandQueue.shift();
         const result = await executeCommand(command);
 
         // 回傳指令執行結果
-        process.send(JSON.stringify(result));
+        process.send(JSON.stringify({ uuid, result }));
       }
 
-      // 重新註冊事件
       commandAddedEvent.once('start', run);
     }).emit('start');
   })();
 }).on('error', () => {
-  console.log("[SshDaemon] Failed to connect.");
+  console.log("[SshUtil] Failed to connect.");
+  process.exit();
 }).connect({
   host: TARGET_IP_ADDRESS,
   port: Number(TARGET_SSH_PORT) ?? 22,

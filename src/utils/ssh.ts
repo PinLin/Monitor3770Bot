@@ -1,44 +1,43 @@
-import { promisify } from 'util';
-import { Client } from 'ssh2';
+import { ChildProcess, fork } from 'child_process';
+import { EventEmitter } from 'events';
+import { v4 as uuidv4 } from 'uuid';
 import { SshExecResult } from '../models/ssh-exec-result';
 
-export interface SshConnectConfig {
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-}
+let sshDaemon: ChildProcess;
+(function run() {
+  sshDaemon = fork(__dirname + '/ssh-daemon');
+  sshDaemon.on('exit', () => {
+    setTimeout(() => {
+      run();
+    }, 10000);
+  });
+})()
 
-export function ssh(connectConfig: SshConnectConfig, command: string): Promise<SshExecResult> {
-  const connection = new Client();
+const resultReceivedEvent = new EventEmitter();
 
+sshDaemon.on('message', (message: string) => {
+  const { uuid, result } = JSON.parse(message) as { uuid: string, result: SshExecResult };
+  resultReceivedEvent.emit(uuid, result);
+});
+
+export function ssh(command: string): Promise<SshExecResult> {
   return new Promise((res, rej) => {
-    const readyTimeout = setTimeout(() => {
-      rej("SSH connection timed out.");
-    }, 500);
+    const uuid = uuidv4();
 
-    connection.on('ready', async () => {
-      clearTimeout(readyTimeout);
-
-      let result = {
-        stdout: '',
-        stderr: '',
-      } as SshExecResult;
-
-      try {
-        const stream = await promisify(connection.exec).bind(connection)(command);
-        stream.on('close', () => {
-          connection.end();
-          res(result);
-        }).stdout.on('data', (data) => {
-          result.stdout += data;
-        }).stderr.on('data', (data) => {
-          result.stderr += data;
-        });
-      } catch (e) {
-        rej(e);
+    // 要求執行指令
+    sshDaemon.send(JSON.stringify({ uuid, command }), (err) => {
+      if (err) {
+        rej(err);
       }
-    }).on('error', () => {
-    }).connect(connectConfig);
+    });
+
+    resultReceivedEvent.once(uuid, (result: SshExecResult) => {
+      res(result);
+    });
+
+    setTimeout(() => {
+      resultReceivedEvent.removeAllListeners(uuid);
+      rej('SshExecTimeout');
+    }, 3000);
   });
 }

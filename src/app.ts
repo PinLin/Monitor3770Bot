@@ -35,7 +35,7 @@ bot.use((ctx, next) => {
   }
 });
 
-const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS, USERNAME, PASSWORD, Number(SSH_PORT));
+const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS);
 const testController = new TestController(machine);
 const overviewController = new OverviewController(machine);
 const powerStatusController = new PowerStatusController(machine);

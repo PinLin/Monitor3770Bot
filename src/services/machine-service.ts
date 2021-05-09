@@ -8,20 +8,10 @@ export class MachineService {
     public name: string,
     public ipAddress: string,
     public macAddress: string,
-    private username: string,
-    private password: string,
-    private sshPort: number,
   ) { }
 
   executeCommand(command: string) {
-    console.log(`[MachineService] Executing command ${command}...`);
-
-    return ssh({
-      host: this.ipAddress,
-      port: this.sshPort,
-      username: this.username,
-      password: this.password,
-    }, command);
+    return ssh(command);
   }
 
   async isPowerOn() {
