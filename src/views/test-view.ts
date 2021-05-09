@@ -12,13 +12,16 @@ export function sendTestView(ctx: BotContext, props: TestViewProps) {
   if (props.success) {
     text = "🛠 測試\n" +
       "\n" +
-      "STDIN\n" +
+      "STDIN:\n" +
       `\`${props.command}\`\n` +
       "\n" +
-      "STDOUT：\n" +
+      "STDOUT:\n" +
       `\`${props.result.stdout}\`\n` +
-      "STDERR：\n" +
+      "STDERR:\n" +
       `\`${props.result.stderr}\`\n` +
+      "Code:\n" +
+      `\`${props.result.code}\`\n` +
+      "\n" +
       "SSH 連線成功 ✅\n";
 
   } else {
