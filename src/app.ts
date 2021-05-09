@@ -6,6 +6,7 @@ import { TestController } from './controllers/test-controller';
 import { UserStatusController } from './controllers/user-status-controller';
 import { BotContext } from './interfaces/bot-context';
 import { MachineService } from './services/machine-service';
+import { sendNoPermissionView } from './views/no-permission-view';
 
 config();
 
@@ -30,12 +31,7 @@ bot.use((ctx, next) => {
   } else {
     const username = ctx.from.username ?? ctx.from.first_name + " " + ctx.from.last_name;
     console.log(`Denied actions by ${username} (${id})`);
-    ctx.reply(`🔒 此帳號（ \`${id}\` ）不在允許清單內，沒有權限使用。`, {
-      parse_mode: 'Markdown',
-      reply_markup: {
-        remove_keyboard: true,
-      },
-    });
+    sendNoPermissionView(ctx, { id });
   }
 });
 
