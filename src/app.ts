@@ -80,4 +80,4 @@ bot.catch((err) => {
 });
 
 bot.launch();
-console.log("Bot launched successfully!");
+console.log("Bot launched successfully!\n");
