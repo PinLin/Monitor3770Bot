@@ -1,5 +1,5 @@
 import { BotContext } from '../interfaces/bot-context';
-import { SshExecResult } from '../utils/ssh';
+import { SshExecResult } from '../models/ssh-exec-result';
 
 export interface TestViewProps {
   success: boolean;

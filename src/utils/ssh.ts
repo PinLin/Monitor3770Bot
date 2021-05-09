@@ -1,10 +1,6 @@
 import { promisify } from 'util';
 import { Client } from 'ssh2';
-
-export interface SshExecResult {
-  stdout: string;
-  stderr: string;
-}
+import { SshExecResult } from '../models/ssh-exec-result';
 
 export interface SshConnectConfig {
   host: string;
