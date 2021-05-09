@@ -9,7 +9,7 @@ let sshDaemon: ChildProcess;
   sshDaemon.on('exit', () => {
     setTimeout(() => {
       run();
-    }, 10000);
+    }, 1000);
   });
 })()
 
