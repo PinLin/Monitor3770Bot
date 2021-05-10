@@ -4,7 +4,7 @@ import { OverviewController } from './controllers/overview-controller';
 import { PowerController } from './controllers/power-controller';
 import { TestController } from './controllers/test-controller';
 import { UserController } from './controllers/user-controller';
-import { BotContext } from './interfaces/bot-context';
+import { BotContext } from './models/bot-context';
 import { MachineService } from './services/machine-service';
 import { sendNoPermissionView } from './views/no-permission-view';
 

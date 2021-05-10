@@ -1,5 +1,5 @@
 import { KeyboardButton } from 'telegraf/typings/telegram-types';
-import { BotContext } from '../interfaces/bot-context';
+import { BotContext } from '../models/bot-context';
 
 export interface MachineNameViewProps {
   machineName: string;

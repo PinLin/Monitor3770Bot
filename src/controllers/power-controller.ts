@@ -1,4 +1,4 @@
-import { BotContext } from '../interfaces/bot-context';
+import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
 import { sendCancelPowerOffView } from '../views/power/cancel-power-off-view';
 import { sendPowerOffView } from '../views/power/power-off-view';

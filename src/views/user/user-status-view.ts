@@ -1,4 +1,4 @@
-import { BotContext } from '../../interfaces/bot-context';
+import { BotContext } from '../../models/bot-context';
 import { OnlineUser } from '../../models/online-user';
 import { sendMachineNameView } from '../machine-name-view';
 

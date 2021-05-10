@@ -1,4 +1,4 @@
-import { BotContext } from '../../interfaces/bot-context';
+import { BotContext } from '../../models/bot-context';
 import { UpTime } from '../../models/up-time';
 import { sendMachineNameView } from '../machine-name-view';
 

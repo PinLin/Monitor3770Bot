@@ -1,4 +1,4 @@
-import { BotContext } from '../../interfaces/bot-context';
+import { BotContext } from '../../models/bot-context';
 
 export function sendSetPowerOffDelayView(ctx: BotContext) {
   return ctx.reply('🌆 關機\n' +

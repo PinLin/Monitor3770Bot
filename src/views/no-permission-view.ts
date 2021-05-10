@@ -1,4 +1,4 @@
-import { BotContext } from '../interfaces/bot-context';
+import { BotContext } from '../models/bot-context';
 
 export interface NoPermissionViewProps {
   id: number;

@@ -1,4 +1,4 @@
-import { BotContext } from '../interfaces/bot-context';
+import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
 import { sendSendMessageView } from '../views/user/send-message-view';
 import { sendSetMessageTextView } from '../views/user/set-message-text-view';

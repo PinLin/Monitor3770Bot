@@ -1,5 +1,9 @@
 import { Context } from 'telegraf';
-import { BotSession } from './bot-session';
+
+export interface BotSession {
+  state?: string;
+  sendMessageUser?: string;
+}
 
 export interface BotContext extends Context {
   session: BotSession;
