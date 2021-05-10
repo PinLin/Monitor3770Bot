@@ -1,6 +1,6 @@
-import { BotContext } from '../interfaces/bot-context';
-import { OnlineUser } from '../models/online-user';
-import { sendMachineNameView } from './machine-name-view';
+import { BotContext } from '../../interfaces/bot-context';
+import { OnlineUser } from '../../models/online-user';
+import { sendMachineNameView } from '../machine-name-view';
 
 export interface UserStatusViewProps {
   machineName?: string;

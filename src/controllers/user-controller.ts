@@ -1,22 +1,22 @@
 import { BotContext } from '../interfaces/bot-context';
 import { MachineService } from '../services/machine-service';
-import { sendSendMessageView } from '../views/send-message-view';
-import { sendSetMessageTextView } from '../views/set-message-text-view';
-import { editUserStatusView, sendUserStatusView } from '../views/user-status-view';
+import { sendSendMessageView } from '../views/user/send-message-view';
+import { sendSetMessageTextView } from '../views/user/set-message-text-view';
+import { editUserStatusView, sendUserStatusView } from '../views/user/user-status-view';
 
-export class UserStatusController {
+export class UserController {
   constructor(
     private machine: MachineService,
   ) { }
 
-  async main(ctx: BotContext) {
+  async showUserStatus(ctx: BotContext) {
     const machineName = this.machine.name;
     const onlineUsers = await this.machine.getOnlineUsers();
 
     return sendUserStatusView(ctx, { machineName, onlineUsers });
   }
 
-  async refresh(ctx: BotContext) {
+  async refreshUserStatus(ctx: BotContext) {
     const onlineUsers = await this.machine.getOnlineUsers();
 
     return editUserStatusView(ctx, { onlineUsers });

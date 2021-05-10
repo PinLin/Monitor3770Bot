@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import { session, Telegraf } from 'telegraf';
 import { OverviewController } from './controllers/overview-controller';
 import { TestController } from './controllers/test-controller';
-import { UserStatusController } from './controllers/user-status-controller';
+import { UserController } from './controllers/user-controller';
 import { BotContext } from './interfaces/bot-context';
 import { MachineService } from './services/machine-service';
 import { sendNoPermissionView } from './views/no-permission-view';
@@ -34,10 +34,10 @@ bot.use((ctx, next) => {
 const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS);
 const testController = new TestController(machine);
 const overviewController = new OverviewController(machine);
-const userStatusController = new UserStatusController(machine);
+const userController = new UserController(machine);
 
 bot.action('refreshOverview', (ctx) => overviewController.refresh(ctx));
-bot.action('refreshUserStatus', (ctx) => userStatusController.refresh(ctx));
+bot.action('refreshUserStatus', (ctx) => userController.refreshUserStatus(ctx));
 bot.command('test', (ctx) => testController.main(ctx));
 bot.hears('🔙 取消', (ctx) => {
   ctx.session.state = '';
@@ -53,7 +53,7 @@ bot.on('message', (ctx, next) => {
     return overviewController.powerOff(ctx);
   }
   if (state == 'setMessageText') {
-    return userStatusController.sendMessage(ctx);
+    return userController.sendMessage(ctx);
   }
   next();
 });
@@ -63,9 +63,9 @@ bot.command('poweron', (ctx) => overviewController.powerOn(ctx));
 bot.hears('🏙 開機', (ctx) => overviewController.powerOn(ctx));
 bot.command('poweroff', (ctx) => overviewController.setPowerOffDelay(ctx));
 bot.hears('🌆 關機', (ctx) => overviewController.setPowerOffDelay(ctx));
-bot.command('user', (ctx) => userStatusController.main(ctx));
-bot.hears('👤 使用者', (ctx) => userStatusController.main(ctx));
-bot.hears(/^\/message_/, (ctx) => userStatusController.setMessageText(ctx));
+bot.command('user', (ctx) => userController.showUserStatus(ctx));
+bot.hears('👤 使用者', (ctx) => userController.showUserStatus(ctx));
+bot.hears(/^\/message_/, (ctx) => userController.setMessageText(ctx));
 
 bot.catch((err) => {
   console.log("Oops, an error occured: ", err);
