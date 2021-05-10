@@ -63,7 +63,7 @@ bot.command('poweron', (ctx) => overviewController.powerOn(ctx));
 bot.hears('🏙 開機', (ctx) => overviewController.powerOn(ctx));
 bot.command('poweroff', (ctx) => overviewController.setPowerOffDelay(ctx));
 bot.hears('🌆 關機', (ctx) => overviewController.setPowerOffDelay(ctx));
-bot.command('userstatus', (ctx) => userStatusController.main(ctx));
+bot.command('user', (ctx) => userStatusController.main(ctx));
 bot.hears('👤 使用者', (ctx) => userStatusController.main(ctx));
 bot.hears(/^\/message_/, (ctx) => userStatusController.setMessageText(ctx));
 
