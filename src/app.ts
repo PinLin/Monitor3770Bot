@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { session, Telegraf } from 'telegraf';
 import { OverviewController } from './controllers/overview-controller';
+import { PowerController } from './controllers/power-controller';
 import { TestController } from './controllers/test-controller';
 import { UserController } from './controllers/user-controller';
 import { BotContext } from './interfaces/bot-context';
@@ -34,35 +35,36 @@ bot.use((ctx, next) => {
 const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS);
 const testController = new TestController(machine);
 const overviewController = new OverviewController(machine);
+const powerController = new PowerController(machine);
 const userController = new UserController(machine);
 
-bot.action('refreshOverview', (ctx) => overviewController.refresh(ctx));
+bot.action('refreshOverview', (ctx) => overviewController.refreshOverview(ctx));
 bot.action('refreshUserStatus', (ctx) => userController.refreshUserStatus(ctx));
 bot.command('test', (ctx) => testController.main(ctx));
 bot.hears('🔙 取消', (ctx) => {
   ctx.session.state = '';
-  return overviewController.main(ctx);
+  return overviewController.showOverview(ctx);
 });
 bot.command('cancel', (ctx) => {
   ctx.session.state = '';
-  return overviewController.main(ctx);
+  return overviewController.showOverview(ctx);
 });
 bot.on('message', (ctx, next) => {
   const { state } = ctx.session;
   if (state == 'setPowerOffDelay') {
-    return overviewController.powerOff(ctx);
+    return powerController.powerOff(ctx);
   }
   if (state == 'setMessageText') {
     return userController.sendMessage(ctx);
   }
   next();
 });
-bot.start((ctx) => overviewController.main(ctx));
-bot.hears('📊 總覽', (ctx) => overviewController.main(ctx));
-bot.command('poweron', (ctx) => overviewController.powerOn(ctx));
-bot.hears('🏙 開機', (ctx) => overviewController.powerOn(ctx));
-bot.command('poweroff', (ctx) => overviewController.setPowerOffDelay(ctx));
-bot.hears('🌆 關機', (ctx) => overviewController.setPowerOffDelay(ctx));
+bot.start((ctx) => overviewController.showOverview(ctx));
+bot.hears('📊 總覽', (ctx) => overviewController.showOverview(ctx));
+bot.command('poweron', (ctx) => powerController.powerOn(ctx));
+bot.hears('🏙 開機', (ctx) => powerController.powerOn(ctx));
+bot.command('poweroff', (ctx) => powerController.setPowerOffDelay(ctx));
+bot.hears('🌆 關機', (ctx) => powerController.setPowerOffDelay(ctx));
 bot.command('user', (ctx) => userController.showUserStatus(ctx));
 bot.hears('👤 使用者', (ctx) => userController.showUserStatus(ctx));
 bot.hears(/^\/message_/, (ctx) => userController.setMessageText(ctx));

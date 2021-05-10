@@ -1,4 +1,4 @@
-import { BotContext } from '../interfaces/bot-context';
+import { BotContext } from '../../interfaces/bot-context';
 
 export interface PowerOnViewProps {
   success: boolean;

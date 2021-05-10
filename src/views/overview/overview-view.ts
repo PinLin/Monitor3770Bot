@@ -1,6 +1,6 @@
-import { BotContext } from '../interfaces/bot-context';
-import { UpTime } from '../models/up-time';
-import { sendMachineNameView } from './machine-name-view';
+import { BotContext } from '../../interfaces/bot-context';
+import { UpTime } from '../../models/up-time';
+import { sendMachineNameView } from '../machine-name-view';
 
 export interface OverviewViewProps {
   machineName?: string;
