@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { config } from 'dotenv';
 import { Client } from 'ssh2';
-import { SshExecResult } from '../models/ssh-exec-result';
+import { SshExecutionResult } from '../models/ssh-execution-result';
 
 config();
 
@@ -11,7 +11,7 @@ const {
 
 const connection = new Client();
 
-function executeCommand(command: string): Promise<SshExecResult> {
+function executeCommand(command: string): Promise<SshExecutionResult> {
   console.log('[SshUtil] Execute command: ' + command);
 
   return new Promise((res, rej) => {
@@ -25,7 +25,7 @@ function executeCommand(command: string): Promise<SshExecResult> {
         code: 0,
         stdout: '',
         stderr: '',
-      } as SshExecResult;
+      } as SshExecutionResult;
 
       stream.on('close', () => {
         // 回傳指令執行結果

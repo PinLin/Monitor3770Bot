@@ -1,7 +1,7 @@
 import { ChildProcess, fork } from 'child_process';
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import { SshExecResult } from '../models/ssh-exec-result';
+import { SshExecutionResult } from '../models/ssh-execution-result';
 
 let sshDaemon: ChildProcess;
 (function run() {
@@ -16,11 +16,11 @@ let sshDaemon: ChildProcess;
 const resultReceivedEvent = new EventEmitter();
 
 sshDaemon.on('message', (message: string) => {
-  const { uuid, result } = JSON.parse(message) as { uuid: string, result: SshExecResult };
+  const { uuid, result } = JSON.parse(message) as { uuid: string, result: SshExecutionResult };
   resultReceivedEvent.emit(uuid, result);
 });
 
-export function ssh(command: string): Promise<SshExecResult> {
+export function ssh(command: string): Promise<SshExecutionResult> {
   return new Promise((res, rej) => {
     const uuid = uuidv4();
 
@@ -31,7 +31,7 @@ export function ssh(command: string): Promise<SshExecResult> {
       }
     });
 
-    resultReceivedEvent.once(uuid, (result: SshExecResult) => {
+    resultReceivedEvent.once(uuid, (result: SshExecutionResult) => {
       res(result);
     });
   });

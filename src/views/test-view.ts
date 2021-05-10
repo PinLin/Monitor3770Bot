@@ -1,10 +1,10 @@
 import { BotContext } from '../models/bot-context';
-import { SshExecResult } from '../models/ssh-exec-result';
+import { SshExecutionResult } from '../models/ssh-execution-result';
 
 export interface TestViewProps {
   success: boolean;
   command: string;
-  result?: SshExecResult;
+  result?: SshExecutionResult;
 }
 
 export function sendTestView(ctx: BotContext, props: TestViewProps) {
