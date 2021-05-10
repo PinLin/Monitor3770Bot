@@ -75,4 +75,5 @@ connection.on('ready', () => {
   port: Number(TARGET_SSH_PORT) ?? 22,
   username: TARGET_USERNAME,
   password: TARGET_PASSWORD,
+  readyTimeout: 1000,
 });

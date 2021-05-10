@@ -34,10 +34,5 @@ export function ssh(command: string): Promise<SshExecResult> {
     resultReceivedEvent.once(uuid, (result: SshExecResult) => {
       res(result);
     });
-
-    setTimeout(() => {
-      resultReceivedEvent.removeAllListeners(uuid);
-      rej('SshExecTimeout');
-    }, 3000);
   });
 }
