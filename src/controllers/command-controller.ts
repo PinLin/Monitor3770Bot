@@ -1,14 +1,21 @@
 import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
 import { sendShowExecutionResultView } from '../views/command/show-execution-result-view';
+import { sendStartInputCommandView } from '../views/command/start-input-command-view';
 
 export class CommandController {
   constructor(
     private machine: MachineService,
   ) { }
 
+  async startInputCommand(ctx: BotContext) {
+    ctx.session.state = 'startInputCommand';
+
+    return sendStartInputCommandView(ctx);
+  }
+
   async showExecutionResult(ctx: BotContext) {
-    const command = 'echo 123 & echo 456 1>&2';
+    const command = ctx.message.text;
     try {
       const result = await this.machine.executeCommand(command);
 

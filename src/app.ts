@@ -56,13 +56,16 @@ bot.on('message', (ctx, next) => {
   if (state == 'setMessageText') {
     return userController.sendMessage(ctx);
   }
+  if (state == 'startInputCommand') {
+    return commandController.showExecutionResult(ctx);
+  }
   next();
 });
 bot.start((ctx) => overviewController.showOverview(ctx));
 bot.hears('📊 總覽', (ctx) => overviewController.showOverview(ctx));
 bot.command('poweron', (ctx) => powerController.powerOn(ctx));
-bot.hears('🖥️ 命令', (ctx) => commandController.showExecutionResult(ctx));
-bot.command('command', (ctx) => commandController.showExecutionResult(ctx));
+bot.hears('🖥️ 命令', (ctx) => commandController.startInputCommand(ctx));
+bot.command('command', (ctx) => commandController.startInputCommand(ctx));
 bot.hears('🏙 開機', (ctx) => powerController.powerOn(ctx));
 bot.command('poweroff', (ctx) => powerController.setPowerOffDelay(ctx));
 bot.hears('🌆 關機', (ctx) => powerController.setPowerOffDelay(ctx));
