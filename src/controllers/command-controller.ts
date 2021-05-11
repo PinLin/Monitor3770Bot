@@ -1,20 +1,20 @@
 import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
-import { sendTestView } from '../views/test-view';
+import { sendShowExecutionResultView } from '../views/command/show-execution-result-view';
 
-export class TestController {
+export class CommandController {
   constructor(
     private machine: MachineService,
   ) { }
 
-  async main(ctx: BotContext) {
+  async showExecutionResult(ctx: BotContext) {
     const command = 'echo 123 & echo 456 1>&2';
     try {
       const result = await this.machine.executeCommand(command);
 
-      return sendTestView(ctx, { success: true, command, result });
+      return sendShowExecutionResultView(ctx, { success: true, command, result });
     } catch (e) {
-      return sendTestView(ctx, { success: false, command });
+      return sendShowExecutionResultView(ctx, { success: false, command });
     }
   }
 }

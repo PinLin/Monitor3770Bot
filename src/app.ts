@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import { session, Telegraf } from 'telegraf';
 import { OverviewController } from './controllers/overview-controller';
 import { PowerController } from './controllers/power-controller';
-import { TestController } from './controllers/test-controller';
+import { CommandController } from './controllers/command-controller';
 import { UserController } from './controllers/user-controller';
 import { BotContext } from './models/bot-context';
 import { MachineService } from './services/machine-service';
@@ -33,14 +33,13 @@ bot.use((ctx, next) => {
 });
 
 const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS);
-const testController = new TestController(machine);
 const overviewController = new OverviewController(machine);
+const commandController = new CommandController(machine);
 const powerController = new PowerController(machine);
 const userController = new UserController(machine);
 
 bot.action('refreshOverview', (ctx) => overviewController.refreshOverview(ctx));
 bot.action('refreshUserStatus', (ctx) => userController.refreshUserStatus(ctx));
-bot.command('test', (ctx) => testController.main(ctx));
 bot.hears('🔙 取消', (ctx) => {
   ctx.session.state = '';
   return overviewController.showOverview(ctx);
@@ -62,6 +61,8 @@ bot.on('message', (ctx, next) => {
 bot.start((ctx) => overviewController.showOverview(ctx));
 bot.hears('📊 總覽', (ctx) => overviewController.showOverview(ctx));
 bot.command('poweron', (ctx) => powerController.powerOn(ctx));
+bot.hears('🖥️ 命令', (ctx) => commandController.showExecutionResult(ctx));
+bot.command('command', (ctx) => commandController.showExecutionResult(ctx));
 bot.hears('🏙 開機', (ctx) => powerController.powerOn(ctx));
 bot.command('poweroff', (ctx) => powerController.setPowerOffDelay(ctx));
 bot.hears('🌆 關機', (ctx) => powerController.setPowerOffDelay(ctx));

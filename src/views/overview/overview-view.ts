@@ -52,7 +52,8 @@ function getMessageContent(props: OverviewViewProps) {
     `目前共有 ${props.onlineUserNumber} 位使用者登入\n` +
     "➖➖➖➖➖➖➖➖➖➖\n";
   const keyboard = [
-    [{ text: '🏙 開機' }, { text: '🌆 關機' }, { text: '👤 使用者' }],
+    [{ text: '🖥️ 命令' }, { text: '👤 使用者' }],
+    [{ text: '🏙 開機' }, { text: '🌆 關機' }],
   ];
   const inlineKeyboard = [
     [{ text: '🔁 重新整理', callback_data: 'refreshOverview' }],
