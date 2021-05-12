@@ -1,5 +1,6 @@
 import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
+import { sendShowExecutingView } from '../views/command/show-executing-view';
 import { sendShowExecutionResultView } from '../views/command/show-execution-result-view';
 import { sendStartInputCommandView } from '../views/command/start-input-command-view';
 
@@ -16,6 +17,9 @@ export class CommandController {
 
   async showExecutionResult(ctx: BotContext) {
     const command = ctx.message.text;
+
+    await sendShowExecutingView(ctx, { command });
+
     try {
       const result = await this.machine.executeCommand(command);
 
