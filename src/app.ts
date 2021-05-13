@@ -6,7 +6,7 @@ import { CommandController } from './controllers/command-controller';
 import { UserController } from './controllers/user-controller';
 import { BotContext } from './models/bot-context';
 import { MachineService } from './services/machine-service';
-import { sendNoPermissionView } from './views/no-permission-view';
+import { allowList } from './middlewares/allow-list';
 
 config();
 
@@ -19,18 +19,7 @@ const MAC_ADDRESS = process.env.TARGET_MAC_ADDRESS;
 const bot = new Telegraf<BotContext>(TOKEN);
 
 bot.use(session());
-
-bot.use((ctx, next) => {
-  const id = ctx.from.id;
-  const allowList = ALLOW_LIST.split(',').map((s) => Number(s));
-  if (allowList.includes(id)) {
-    next();
-  } else {
-    const username = ctx.from.username ?? ctx.from.first_name + " " + ctx.from.last_name;
-    console.log(`Denied actions by ${username} (${id})`);
-    sendNoPermissionView(ctx, { id });
-  }
-});
+bot.use(allowList(ALLOW_LIST.split(',').map((s) => Number(s))));
 
 const machine = new MachineService(NAME, IP_ADDRESS, MAC_ADDRESS);
 const overviewController = new OverviewController(machine);
