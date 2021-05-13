@@ -7,7 +7,7 @@ export function sendStartInputCommandView(ctx: BotContext) {
     reply_markup: {
       resize_keyboard: true,
       keyboard: [
-        [{ text: '📊 總覽' }],
+        [{ text: '🔙 取消' }],
       ],
     },
   });
