@@ -12,7 +12,7 @@ const {
 const connection = new Client();
 
 function executeCommand(command: string): Promise<SshExecutionResult> {
-  console.log('[SshUtil] Execute command: ' + command);
+  console.log('[SshDaemon] Execute command: ' + command);
 
   return new Promise((res, rej) => {
     // 執行指令
@@ -50,7 +50,7 @@ process.on('message', (message: string) => {
 
 // 建立與目標的連線
 connection.on('ready', () => {
-  console.log("[SshUtil] Connected.");
+  console.log("[SshDaemon] Connected.");
 
   (function run() {
     commandAddedEvent.once('start', async () => {
@@ -68,7 +68,7 @@ connection.on('ready', () => {
     }).emit('start');
   })();
 }).on('error', () => {
-  console.log("[SshUtil] Failed to connect.");
+  console.log("[SshDaemon] Failed to connect.");
   process.exit();
 }).connect({
   host: TARGET_IP_ADDRESS,

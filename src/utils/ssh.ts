@@ -5,7 +5,7 @@ import { SshExecutionResult } from '../models/ssh-execution-result';
 
 let sshDaemon: ChildProcess;
 (function run() {
-  sshDaemon = fork(__dirname + '/ssh-daemon');
+  sshDaemon = fork(__dirname + '/../daemons/ssh-daemon');
   sshDaemon.on('exit', () => {
     setTimeout(() => {
       run();
