@@ -17,7 +17,7 @@ export class UserController {
     const machineNameView = getMachineNameView({ machineName });
     const userStatusView = getUserStatusView({ onlineUsers });
 
-    ctx.reply(machineNameView.text, {
+    await ctx.reply(machineNameView.text, {
       parse_mode: 'Markdown',
       reply_markup: {
         resize_keyboard: true,
