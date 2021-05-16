@@ -1,4 +1,3 @@
-import { BotContext } from '../../models/bot-context';
 import { SshExecutionResult as SshExecutionResult } from '../../models/ssh-execution-result';
 
 export interface ShowExecutionResultViewProps {
@@ -7,7 +6,7 @@ export interface ShowExecutionResultViewProps {
   result?: SshExecutionResult;
 }
 
-export function sendShowExecutionResultView(ctx: BotContext, props: ShowExecutionResultViewProps) {
+export function getShowExecutionResultView(props: ShowExecutionResultViewProps) {
   let text: string;
   if (props.success) {
     text = "🖥️ 命令\n" +
@@ -28,5 +27,6 @@ export function sendShowExecutionResultView(ctx: BotContext, props: ShowExecutio
       "\n" +
       "命令執行失敗 ❌\n";
   }
-  return ctx.replyWithMarkdown(text);
+
+  return { text };
 }

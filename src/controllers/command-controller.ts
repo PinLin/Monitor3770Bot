@@ -1,8 +1,9 @@
 import { BotContext } from '../models/bot-context';
+import { SshExecutionResult } from '../models/ssh-execution-result';
 import { MachineService } from '../services/machine-service';
-import { sendShowExecutingView } from '../views/command/show-executing-view';
-import { sendShowExecutionResultView } from '../views/command/show-execution-result-view';
-import { sendStartInputCommandView } from '../views/command/start-input-command-view';
+import { getShowExecutingView } from '../views/command/show-executing-view';
+import { getShowExecutionResultView } from '../views/command/show-execution-result-view';
+import { getStartInputCommandView } from '../views/command/start-input-command-view';
 
 export class CommandController {
   constructor(
@@ -12,20 +13,34 @@ export class CommandController {
   async startInputCommand(ctx: BotContext) {
     ctx.session.state = 'startInputCommand';
 
-    return sendStartInputCommandView(ctx);
+    const startInputCommandView = getStartInputCommandView();
+
+    return ctx.reply(startInputCommandView.text, {
+      reply_markup: {
+        resize_keyboard: true,
+        keyboard: startInputCommandView.keyboard,
+      },
+    });
   }
 
   async showExecutionResult(ctx: BotContext) {
     const command = ctx.message.text;
 
-    await sendShowExecutingView(ctx, { command });
+    const showExecutingView = getShowExecutingView({ command });
 
+    const message = await ctx.replyWithMarkdown(showExecutingView.text);
+
+    let result: SshExecutionResult;
+    let success = false;
     try {
-      const result = await this.machine.executeCommand(command);
-
-      return sendShowExecutionResultView(ctx, { success: true, command, result });
+      result = await this.machine.executeCommand(command);
+      success = true;
     } catch (e) {
-      return sendShowExecutionResultView(ctx, { success: false, command });
     }
+    const showExecutionResultView = getShowExecutionResultView({ success, command, result })
+
+    return ctx.telegram.editMessageText(ctx.chat.id, message.message_id, null, showExecutionResultView.text, {
+      parse_mode: 'Markdown',
+    });
   }
 }
