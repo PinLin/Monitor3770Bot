@@ -1,3 +1,4 @@
+import { SessionState } from '../enums/session-state';
 import { BotContext } from '../models/bot-context';
 import { SshExecutionResult } from '../models/ssh-execution-result';
 import { MachineService } from '../services/machine-service';
@@ -11,7 +12,7 @@ export class CommandController {
   ) { }
 
   async startInputCommand(ctx: BotContext) {
-    ctx.session.state = 'startInputCommand';
+    ctx.session.state = SessionState.StartInputCommand;
 
     const startInputCommandView = getStartInputCommandView();
 

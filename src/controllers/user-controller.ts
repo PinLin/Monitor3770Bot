@@ -1,3 +1,4 @@
+import { SessionState } from '../enums/session-state';
 import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
 import { getMachineNameView } from '../views/machine-name-view';
@@ -51,7 +52,7 @@ export class UserController {
   }
 
   setMessageText(ctx: BotContext) {
-    ctx.session.state = 'setMessageText';
+    ctx.session.state = SessionState.SetMessageText;
 
     const username = ctx.message.text.replace('/message_', '');
     ctx.session.sendMessageUser = username;
@@ -67,7 +68,7 @@ export class UserController {
   }
 
   async sendMessage(ctx: BotContext) {
-    ctx.session.state = '';
+    ctx.session.state = SessionState.None;
 
     const username = ctx.session.sendMessageUser;
     const messageText = ctx.message.text.split('\n').join(' ');

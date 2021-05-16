@@ -1,3 +1,4 @@
+import { SessionState } from '../enums/session-state';
 import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
 import { getCancelPowerOffView } from '../views/power/cancel-power-off-view';
@@ -24,7 +25,7 @@ export class PowerController {
   }
 
   async setPowerOffDelay(ctx: BotContext) {
-    ctx.session.state = 'setPowerOffDelay';
+    ctx.session.state = SessionState.SetPowerOffDelay;
 
     const setPowerOffDelayView = getSetPowerOffDelayView();
 
@@ -37,7 +38,7 @@ export class PowerController {
   }
 
   async powerOff(ctx: BotContext) {
-    ctx.session.state = '';
+    ctx.session.state = SessionState.None;
 
     const { text } = ctx.message;
     if (text == '🔄 重設') {

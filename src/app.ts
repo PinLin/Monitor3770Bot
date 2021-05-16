@@ -8,6 +8,7 @@ import { BotContext } from './models/bot-context';
 import { MachineService } from './services/machine-service';
 import { allowList } from './middlewares/allow-list';
 import { BotAction } from './enums/bot-action';
+import { SessionState } from './enums/session-state';
 
 config();
 
@@ -40,13 +41,13 @@ bot.command('cancel', (ctx) => {
 });
 bot.on('message', (ctx, next) => {
   const { state } = ctx.session;
-  if (state == 'setPowerOffDelay') {
+  if (state == SessionState.SetPowerOffDelay) {
     return powerController.powerOff(ctx);
   }
-  if (state == 'setMessageText') {
+  if (state == SessionState.SetMessageText) {
     return userController.sendMessage(ctx);
   }
-  if (state == 'startInputCommand') {
+  if (state == SessionState.StartInputCommand) {
     return commandController.showExecutionResult(ctx);
   }
   next();
