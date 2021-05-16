@@ -1,43 +1,11 @@
 import { BotAction } from '../../enums/bot-action';
-import { BotContext } from '../../models/bot-context';
 import { OnlineUser } from '../../models/online-user';
-import { sendMachineNameView } from '../machine-name-view';
 
 export interface UserStatusViewProps {
-  machineName?: string;
   onlineUsers: OnlineUser[];
 }
 
-export async function sendUserStatusView(ctx: BotContext, props: UserStatusViewProps) {
-  const { text, keyboard, inlineKeyboard } = getMessageContent(props);
-  await sendMachineNameView(ctx, {
-    machineName: props.machineName,
-    keyboard,
-  });
-  return ctx.reply(text, {
-    parse_mode: 'Markdown',
-    reply_markup: {
-      inline_keyboard: inlineKeyboard,
-    },
-  });
-}
-
-export async function editUserStatusView(ctx: BotContext, props: UserStatusViewProps) {
-  try {
-    const { text, inlineKeyboard } = getMessageContent(props);
-    return await ctx.editMessageText(text, {
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: inlineKeyboard,
-      },
-    });
-  } catch (e) {
-  } finally {
-    ctx.answerCbQuery("重新整理完畢");
-  }
-}
-
-function getMessageContent(props: UserStatusViewProps) {
+export function getUserStatusView(props: UserStatusViewProps) {
   const text = "👤 使用者列表\n" +
     "\n" +
     (props.onlineUsers.length == 0 ? "目前沒有已登入的使用者\n" : "目前已登入的使用者：\n" + parseOnlineUsers(props.onlineUsers)) +
