@@ -1,3 +1,4 @@
+import { BotAction } from '../../enums/bot-action';
 import { BotContext } from '../../models/bot-context';
 import { OnlineUser } from '../../models/online-user';
 import { sendMachineNameView } from '../machine-name-view';
@@ -45,7 +46,7 @@ function getMessageContent(props: UserStatusViewProps) {
     [{ text: '📊 總覽' }],
   ];
   const inlineKeyboard = [
-    [{ text: '🔁 重新整理', callback_data: 'refreshUserStatus' }],
+    [{ text: '🔁 重新整理', callback_data: BotAction.RefreshUserStatus }],
   ];
 
   return { text, keyboard, inlineKeyboard };

@@ -1,3 +1,4 @@
+import { BotAction } from '../../enums/bot-action';
 import { BotContext } from '../../models/bot-context';
 import { UpTime } from '../../models/up-time';
 import { sendMachineNameView } from '../machine-name-view';
@@ -56,7 +57,7 @@ function getMessageContent(props: OverviewViewProps) {
     [{ text: '🏙 開機' }, { text: '🌆 關機' }],
   ];
   const inlineKeyboard = [
-    [{ text: '🔁 重新整理', callback_data: 'refreshOverview' }],
+    [{ text: '🔁 重新整理', callback_data: BotAction.RefreshOverview }],
   ];
 
   return { text, keyboard, inlineKeyboard };

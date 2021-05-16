@@ -7,6 +7,7 @@ import { UserController } from './controllers/user-controller';
 import { BotContext } from './models/bot-context';
 import { MachineService } from './services/machine-service';
 import { allowList } from './middlewares/allow-list';
+import { BotAction } from './enums/bot-action';
 
 config();
 
@@ -27,8 +28,8 @@ const commandController = new CommandController(machine);
 const powerController = new PowerController(machine);
 const userController = new UserController(machine);
 
-bot.action('refreshOverview', (ctx) => overviewController.refreshOverview(ctx));
-bot.action('refreshUserStatus', (ctx) => userController.refreshUserStatus(ctx));
+bot.action(BotAction.RefreshOverview, (ctx) => overviewController.refreshOverview(ctx));
+bot.action(BotAction.RefreshUserStatus, (ctx) => userController.refreshUserStatus(ctx));
 bot.hears('🔙 取消', (ctx) => {
   ctx.session.state = '';
   return overviewController.showOverview(ctx);

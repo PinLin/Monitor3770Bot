@@ -1,10 +1,6 @@
 import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
-import { sendCancelPowerOffView } from '../views/power/cancel-power-off-view';
 import { editOverviewView, sendOverviewView } from '../views/overview/overview-view';
-import { sendPowerOffView } from '../views/power/power-off-view';
-import { sendPowerOnView } from '../views/power/power-on-view';
-import { sendSetPowerOffDelayView } from '../views/power/set-power-off-delay-view';
 
 export class OverviewController {
   constructor(
