@@ -1,6 +1,7 @@
 import { BotContext } from '../models/bot-context';
 import { MachineService } from '../services/machine-service';
-import { editOverviewView, sendOverviewView } from '../views/overview/overview-view';
+import { getMachineNameView } from '../views/machine-name-view';
+import { getOverviewView } from '../views/overview/overview-view';
 
 export class OverviewController {
   constructor(
@@ -15,9 +16,24 @@ export class OverviewController {
       this.machine.getOnlineUsers(),
     ]);
 
-    return sendOverviewView(ctx, {
-      machineName, ipAddress, macAddress, isPowerOn, upTime,
+    const machineNameView = getMachineNameView({ machineName });
+    const overviewView = getOverviewView({
+      ipAddress, macAddress, isPowerOn, upTime,
       onlineUserNumber: onlineUsers.length,
+    });
+
+    ctx.reply(machineNameView.text, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        resize_keyboard: true,
+        keyboard: overviewView.keyboard,
+      },
+    });
+    return ctx.reply(overviewView.text, {
+      parse_mode: 'Markdown',
+      reply_markup: {
+        inline_keyboard: overviewView.inlineKeyboard,
+      },
     });
   }
 
@@ -29,9 +45,21 @@ export class OverviewController {
       this.machine.getOnlineUsers(),
     ]);
 
-    return editOverviewView(ctx, {
+    const overviewView = getOverviewView({
       ipAddress, macAddress, isPowerOn, upTime,
       onlineUserNumber: onlineUsers.length,
     });
+
+    try {
+      return await ctx.editMessageText(overviewView.text, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: overviewView.inlineKeyboard,
+        },
+      });
+    } catch (e) {
+    } finally {
+      ctx.answerCbQuery("重新整理完畢");
+    }
   }
 }

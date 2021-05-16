@@ -1,10 +1,7 @@
 import { BotAction } from '../../enums/bot-action';
-import { BotContext } from '../../models/bot-context';
 import { UpTime } from '../../models/up-time';
-import { sendMachineNameView } from '../machine-name-view';
 
 export interface OverviewViewProps {
-  machineName?: string;
   ipAddress: string;
   macAddress: string;
   isPowerOn: boolean;
@@ -12,36 +9,7 @@ export interface OverviewViewProps {
   onlineUserNumber: number;
 }
 
-export async function sendOverviewView(ctx: BotContext, props: OverviewViewProps) {
-  const { text, keyboard, inlineKeyboard } = getMessageContent(props);
-  await sendMachineNameView(ctx, {
-    machineName: props.machineName,
-    keyboard,
-  });
-  return ctx.reply(text, {
-    parse_mode: 'Markdown',
-    reply_markup: {
-      inline_keyboard: inlineKeyboard,
-    },
-  });
-}
-
-export async function editOverviewView(ctx: BotContext, props: OverviewViewProps) {
-  try {
-    const { text, inlineKeyboard } = getMessageContent(props);
-    return await ctx.editMessageText(text, {
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: inlineKeyboard,
-      },
-    });
-  } catch (e) {
-  } finally {
-    ctx.answerCbQuery("重新整理完畢");
-  }
-}
-
-function getMessageContent(props: OverviewViewProps) {
+export function getOverviewView(props: OverviewViewProps) {
   const text = "📊 狀態總覽\n" +
     "\n" +
     `IP 位址： \`${props.ipAddress}\`\n` +
