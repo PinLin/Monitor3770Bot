@@ -1,11 +1,9 @@
-import { BotContext } from '../../models/bot-context';
-
 export interface PowerOffViewProps {
   success: boolean;
   minutes?: number;
 }
 
-export function sendPowerOffView(ctx: BotContext, props: PowerOffViewProps) {
+export function getPowerOffView(props: PowerOffViewProps) {
   let text: string;
   if (props.success) {
     if (props.minutes > 0) {
@@ -16,13 +14,9 @@ export function sendPowerOffView(ctx: BotContext, props: PowerOffViewProps) {
   } else {
     text = "🌆 關機請求送出失敗...";
   }
+  const keyboard = [
+    [{ text: '📊 總覽' }],
+  ];
 
-  return ctx.reply(text, {
-    reply_markup: {
-      resize_keyboard: true,
-      keyboard: [
-        [{ text: '📊 總覽' }],
-      ],
-    },
-  });
+  return { text, keyboard };
 }
