@@ -1,7 +1,7 @@
-import { wake } from 'wake_on_lan';
 import { OnlineUser } from '../models/online-user';
 import { UpTime } from '../models/up-time';
 import { ssh } from '../utils/ssh';
+import { wakeOnLan } from '../utils/wake-on-lan';
 
 export class MachineService {
   constructor(
@@ -30,17 +30,11 @@ export class MachineService {
     console.log("[MachineService] Powering on...");
 
     try {
-      await new Promise<void>((res, rej) => {
-        wake(this.macAddress, (err) => {
-          if (err) {
-            rej(err);
-          } else {
-            res();
-          }
-        });
-      });
+      await wakeOnLan(this.macAddress);
+
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
