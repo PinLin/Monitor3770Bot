@@ -1,5 +1,5 @@
 import { OnlineUser } from '../models/online-user';
-import { UpTime } from '../models/up-time';
+import { UpTime, UpTimeDefaultValue } from '../models/up-time';
 import { ssh } from '../utils/ssh';
 import { wakeOnLan } from '../utils/wake-on-lan';
 
@@ -77,29 +77,18 @@ export class MachineService {
     console.log("[MachineService] Getting uptime...");
 
     try {
-      const { stdout } = await ssh(
-        'powershell -c "(get-date) - (gcim Win32_OperatingSystem).LastBootUpTime"');
+      const command = 'powershell -c "(get-date) - (gcim Win32_OperatingSystem).LastBootUpTime"'
+      const { stdout } = await ssh(command);
 
-      let upTimeStrings = stdout.split('\n');
-      upTimeStrings = upTimeStrings.slice(2, 6);
-      const fields = upTimeStrings.map((upTimeString) => {
-        return upTimeString.split(': ')[1];
-      });
+      const upTimeStrings = stdout.split('\n').slice(2, 6);
+      const [
+        days, hours, minutes, seconds
+      ] = upTimeStrings.map(upTimeString => Number(upTimeString.split(': ')[1]));
 
-      return {
-        days: Number(fields[0]),
-        hours: Number(fields[1]),
-        minutes: Number(fields[2]),
-        seconds: Number(fields[3]),
-      } as UpTime;
+      return { days, hours, minutes, seconds } as UpTime;
     } catch (e) {
       console.log(e);
-      return {
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-      } as UpTime;
+      return UpTimeDefaultValue;
     }
   }
 
