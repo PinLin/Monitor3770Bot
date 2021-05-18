@@ -18,7 +18,7 @@ export class MachineService {
     console.log("[MachineService] Getting power on status...");
 
     try {
-      await this.executeCommand('echo hi');
+      await ssh('echo hi');
 
       return true;
     } catch (e) {
@@ -43,7 +43,7 @@ export class MachineService {
     console.log(`[MachineService] Powering off after ${delayMinutes} minute(s)...`);
 
     try {
-      await this.executeCommand(`shutdown -a & shutdown -s -f -t ${delayMinutes * 60}`);
+      await ssh(`shutdown -a & shutdown -s -f -t ${delayMinutes * 60}`);
 
       return true;
     } catch (e) {
@@ -55,7 +55,7 @@ export class MachineService {
     console.log("[MachineService] Canceling power-off...");
 
     try {
-      await this.executeCommand('shutdown -a');
+      await ssh('shutdown -a');
 
       return true;
     } catch (e) {
@@ -67,7 +67,7 @@ export class MachineService {
     console.log("[MachineService] Getting uptime...");
 
     try {
-      const { stdout } = await this.executeCommand(
+      const { stdout } = await ssh(
         'powershell -c "(get-date) - (gcim Win32_OperatingSystem).LastBootUpTime"');
 
       let upTimeStrings = stdout.split('\n');
@@ -96,7 +96,7 @@ export class MachineService {
     console.log("[MachineService] Getting online users...");
 
     try {
-      const { stdout } = await this.executeCommand('chcp 65001 & query user');
+      const { stdout } = await ssh('chcp 65001 & query user');
 
       const userStrings = stdout.split('\r\n');
       userStrings.splice(0, 2);
@@ -132,7 +132,7 @@ export class MachineService {
     console.log(`[MachineService] Sending message to ${username}...`);
 
     try {
-      await this.executeCommand(`msg ${username} ${messageText}`);
+      await ssh(`msg ${username} ${messageText}`);
 
       return true;
     } catch (e) {
