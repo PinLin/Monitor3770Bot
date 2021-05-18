@@ -29,6 +29,7 @@ export class MachineService {
 
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
@@ -54,6 +55,7 @@ export class MachineService {
 
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
@@ -66,6 +68,7 @@ export class MachineService {
 
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
@@ -90,6 +93,7 @@ export class MachineService {
         seconds: Number(fields[3]),
       } as UpTime;
     } catch (e) {
+      console.log(e);
       return {
         days: 0,
         hours: 0,
@@ -131,6 +135,7 @@ export class MachineService {
         } as OnlineUser;
       })
     } catch (e) {
+      console.log(e);
       return [];
     }
   }
@@ -143,6 +148,7 @@ export class MachineService {
 
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
