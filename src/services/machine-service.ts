@@ -10,8 +10,15 @@ export class MachineService {
     public macAddress: string,
   ) { }
 
-  executeCommand(command: string) {
-    return ssh(command);
+  async executeCommand(command: string) {
+    console.log(`[MachineService] Executing command: ${command}...`);
+
+    try {
+      return await ssh(command);
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 
   async isPowerOn() {

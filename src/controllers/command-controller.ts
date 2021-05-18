@@ -1,6 +1,5 @@
 import { SessionState } from '../enums/session-state';
 import { BotContext } from '../models/bot-context';
-import { SshExecutionResult } from '../models/ssh-execution-result';
 import { MachineService } from '../services/machine-service';
 import { getShowExecutingView } from '../views/command/show-executing-view';
 import { getShowExecutionResultView } from '../views/command/show-execution-result-view';
@@ -29,18 +28,17 @@ export class CommandController {
 
     const showExecutingView = getShowExecutingView({ command });
 
-    const message = await ctx.replyWithMarkdown(showExecutingView.text);
+    const firstMessage = await ctx.replyWithMarkdown(showExecutingView.text);
 
-    let result: SshExecutionResult;
-    let success = false;
-    try {
-      result = await this.machine.executeCommand(command);
-      success = true;
-    } catch (e) {
-    }
-    const showExecutionResultView = getShowExecutionResultView({ success, command, result })
+    const result = await this.machine.executeCommand(command);
 
-    return ctx.telegram.editMessageText(ctx.chat.id, message.message_id, null, showExecutionResultView.text, {
+    const showExecutionResultView = getShowExecutionResultView({
+      success: result != null,
+      command,
+      result,
+    })
+
+    return ctx.telegram.editMessageText(ctx.chat.id, firstMessage.message_id, null, showExecutionResultView.text, {
       parse_mode: 'Markdown',
     });
   }
