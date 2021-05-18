@@ -27,8 +27,9 @@ function executeCommand(command: string): Promise<SshExecutionResult> {
         stderr: '',
       } as SshExecutionResult;
 
-      stream.on('close', () => {
+      stream.on('close', (code) => {
         // 回傳指令執行結果
+        result.code = code;
         res(result);
       }).stdout.on('data', (data) => {
         result.stdout += data;
