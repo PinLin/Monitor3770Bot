@@ -9,7 +9,7 @@ let sshDaemon: ChildProcess;
   sshDaemon.on('exit', () => {
     setTimeout(() => {
       run();
-    }, 1000);
+    }, 1000); // 連線失敗的話每過一秒重試一次
   });
 })()
 
@@ -20,19 +20,32 @@ sshDaemon.on('message', (message: string) => {
   resultReceivedEvent.emit(uuid, result);
 });
 
-export function ssh(command: string): Promise<SshExecutionResult> {
+export interface SshOptions {
+  timeout?: number; // 執行逾時，單位為毫秒
+}
+
+export function ssh(command: string, options?: SshOptions): Promise<SshExecutionResult> {
   return new Promise((res, rej) => {
     const uuid = uuidv4();
+
+    // 註冊接收執行結果的 handler
+    resultReceivedEvent.once(uuid, (result: SshExecutionResult) => {
+      res(result);
+    });
+
+    // 設定執行逾時
+    if (options?.timeout) {
+      setTimeout(() => {
+        resultReceivedEvent.removeAllListeners(uuid);
+        rej("Execution timeout.");
+      }, options.timeout);
+    }
 
     // 要求執行指令
     sshDaemon.send(JSON.stringify({ uuid, command }), (err) => {
       if (err) {
         rej(err);
       }
-    });
-
-    resultReceivedEvent.once(uuid, (result: SshExecutionResult) => {
-      res(result);
     });
   });
 }
