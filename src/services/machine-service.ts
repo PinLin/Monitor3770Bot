@@ -102,15 +102,13 @@ export class MachineService {
       userStrings.splice(0, 2);
       userStrings.splice(userStrings.length - 1, 1);
       return userStrings.map((userString) => {
-        const fields = [] as string[];
-        userString.split(' ').forEach((field) => {
-          if (field != '') {
-            fields.push(field);
-          }
-        });
-
-        const [year, month, day] = fields[fields.length - 3].split('/').map((s) => Number(s));
-        let [hour, minute] = fields[fields.length - 1].split(':').map((s) => Number(s));
+        const fields = userString.split(' ').filter(field => field != '');
+        const [
+          year, month, day
+        ] = fields[fields.length - 3].split('/').map((s) => Number(s));
+        let [
+          hour, minute
+        ] = fields[fields.length - 1].split(':').map((s) => Number(s));
         if (fields[fields.length - 2] != '�W��') {
           hour += 12;
         }
