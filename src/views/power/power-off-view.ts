@@ -14,9 +14,11 @@ export function getPowerOffView(props: PowerOffViewProps) {
   } else {
     text = "🌆 關機請求送出失敗...";
   }
-  const keyboard = [
-    [{ text: '📊 總覽' }],
-  ];
 
-  return { text, keyboard };
+  return {
+    text,
+    keyboard: [
+      [{ text: '📊 總覽' }],
+    ],
+  };
 }

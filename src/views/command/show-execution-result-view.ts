@@ -19,7 +19,6 @@ export function getShowExecutionResultView(props: ShowExecutionResultViewProps) 
       `\`${props.result.stderr}\`\n` +
       "Code:\n" +
       `\`${props.result.code}\`\n`;
-
   } else {
     text = "🖥️ 命令\n" +
       "\n" +
