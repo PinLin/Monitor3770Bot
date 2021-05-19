@@ -28,7 +28,7 @@ export function ssh(command: string, options?: SshOptions): Promise<SshExecution
   return new Promise((res, rej) => {
     const uuid = uuidv4();
 
-    // 註冊接收執行結果的 handler
+    // 註冊接收執行結果的事件
     resultReceivedEvent.once(uuid, (result: SshExecutionResult) => {
       res(result);
     });
