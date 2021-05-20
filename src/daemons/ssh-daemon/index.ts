@@ -31,4 +31,5 @@ connection.on('ready', () => {
   username: process.env.TARGET_USERNAME,
   password: process.env.TARGET_PASSWORD,
   readyTimeout: 4000,
+  keepaliveInterval: 1000,
 });
