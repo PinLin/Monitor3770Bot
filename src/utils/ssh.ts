@@ -25,7 +25,6 @@ sshDaemon.on('message', (message: string) => {
     resultReceivedEvent.emit(response.uuid, response.result);
   }
 
-  // 查看是否還有指令要執行
   if (executionQueue.length > 0) {
     sshDaemon.send(JSON.stringify(executionQueue.shift()));
   } else {
@@ -43,11 +42,9 @@ export function ssh(command: string): Promise<SshExecutionResult> {
     });
 
     if (sshDaemonIsReady) {
-      // 送出要執行的指令
       sshDaemonIsReady = false;
       sshDaemon.send(JSON.stringify({ uuid, command }));
     } else {
-      // 把指令放入佇列等待
       executionQueue.push({ uuid, command });
     }
   });

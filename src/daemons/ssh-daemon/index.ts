@@ -11,11 +11,10 @@ connection.on('ready', () => {
 
   // 接收外部要求執行的指令
   process.on('message', async (message: string) => {
-    // 執行指令
     const { uuid, command } = JSON.parse(message);
-    const result = await execute(connection, command);
 
-    // 回傳指令執行結果
+    // 執行指令並回傳結果
+    const result = await execute(connection, command);
     process.send(JSON.stringify({ uuid, result }));
   });
 
