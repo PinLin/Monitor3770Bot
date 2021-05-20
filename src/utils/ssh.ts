@@ -20,11 +20,7 @@ sshDaemon.on('message', (message: string) => {
   resultReceivedEvent.emit(uuid, result);
 });
 
-export interface SshOptions {
-  timeout?: number; // 執行逾時，單位為毫秒
-}
-
-export function ssh(command: string, options?: SshOptions): Promise<SshExecutionResult> {
+export function ssh(command: string): Promise<SshExecutionResult> {
   return new Promise((res, rej) => {
     const uuid = uuidv4();
 
@@ -32,14 +28,6 @@ export function ssh(command: string, options?: SshOptions): Promise<SshExecution
     resultReceivedEvent.once(uuid, (result: SshExecutionResult) => {
       res(result);
     });
-
-    // 設定執行逾時
-    if (options?.timeout) {
-      setTimeout(() => {
-        resultReceivedEvent.removeAllListeners(uuid);
-        rej("Execution timeout.");
-      }, options.timeout);
-    }
 
     // 要求執行指令
     sshDaemon.send(JSON.stringify({ uuid, command }), (err) => {
