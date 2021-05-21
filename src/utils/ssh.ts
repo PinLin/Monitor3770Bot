@@ -5,7 +5,9 @@ import { SshExecutionResult } from '../models/ssh-execution-result';
 
 const resultReceivedEvent = new EventEmitter();
 
-const executionQueue = [] as { uuid: string, command: string, allocateTimeoutTimer: NodeJS.Timeout }[];
+const executionQueue = [] as {
+  uuid: string, command: string, timeout: number, allocateTimeoutTimer: NodeJS.Timeout
+}[];
 
 let sshDaemonIsReady = false;
 let sshDaemon: ChildProcess;
@@ -18,10 +20,10 @@ let sshDaemon: ChildProcess;
     }
 
     if (executionQueue.length > 0) {
-      const { uuid, command, allocateTimeoutTimer } = executionQueue.shift();
+      const { uuid, command, timeout, allocateTimeoutTimer } = executionQueue.shift();
       // 解除指派逾時
       clearTimeout(allocateTimeoutTimer);
-      sshDaemon.send(JSON.stringify({ uuid, command }));
+      sshDaemon.send(JSON.stringify({ uuid, command, timeout }));
     } else {
       sshDaemonIsReady = true;
     }
@@ -34,8 +36,13 @@ let sshDaemon: ChildProcess;
   });
 })();
 
-export function ssh(command: string): Promise<SshExecutionResult> {
+export interface SshOptions {
+  timeout?: number;
+}
+
+export function ssh(command: string, options?: SshOptions): Promise<SshExecutionResult> {
   return new Promise((res, rej) => {
+    const timeout = options?.timeout ?? 1500;
     const uuid = uuidv4();
 
     // 註冊接收執行結果的事件
@@ -45,7 +52,7 @@ export function ssh(command: string): Promise<SshExecutionResult> {
 
     if (sshDaemonIsReady) {
       sshDaemonIsReady = false;
-      sshDaemon.send(JSON.stringify({ uuid, command }));
+      sshDaemon.send(JSON.stringify({ uuid, command, timeout }));
     } else {
       // 設定指派逾時
       const allocateTimeoutTimer = setTimeout(() => {
@@ -54,9 +61,9 @@ export function ssh(command: string): Promise<SshExecutionResult> {
           executionQueue.splice(executionIndex, 1);
         }
         resultReceivedEvent.removeAllListeners(uuid);
-        rej("[SshUtil] Execution timed out.")
+        rej("[SshUtil] Allocation timed out.")
       }, 1500);
-      executionQueue.push({ uuid, command, allocateTimeoutTimer });
+      executionQueue.push({ uuid, command, timeout, allocateTimeoutTimer });
     }
   });
 }

@@ -11,19 +11,31 @@ connection.on('ready', () => {
 
   // 接收外部要求執行的指令
   process.on('message', async (message: string) => {
-    const { uuid, command } = JSON.parse(message);
+    const { uuid, command, timeout } = JSON.parse(message);
 
     console.log('[SshDaemon] Execute command: ' + command);
 
     // 執行指令並回傳結果
     connection.exec(command, (err, stream) => {
       const result = {
-        code: NaN,
+        code: undefined,
         stdout: '',
         stderr: '',
       } as SshExecutionResult;
 
+      // 設定執行逾時
+      let executionTimeoutTimeer: NodeJS.Timeout;
+      if (timeout != 0) {
+        executionTimeoutTimeer = setTimeout(() => {
+          console.log('[SshDaemon] Execution timed out.');
+          stream.emit('close');
+        }, timeout);
+      }
+
       stream.on('close', (code) => {
+        // 清除執行逾時
+        clearTimeout(executionTimeoutTimeer);
+
         // 回傳指令執行結果
         result.code = code;
         process.send(JSON.stringify({ uuid, result }));
