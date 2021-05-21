@@ -114,7 +114,7 @@ export class MachineService {
         let [
           hour, minute
         ] = fields[fields.length - 1].split(':').map((s) => Number(s));
-        if (fields[fields.length - 2] != '�W��') {
+        if (fields[fields.length - 2] != '�W��' && hour != 12) {
           hour += 12;
         }
         const loginTime = new Date();
