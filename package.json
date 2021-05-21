@@ -1,6 +1,6 @@
 {
   "name": "monitor3770bot",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "透過 SSH 來管理目標電腦的 Telegram Bot",
   "scripts": {
     "build": "tsc",
