@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { Client } from 'ssh2';
-import { SshExecutionResult } from '../../models/ssh-execution-result';
+import { SshExecutionResult } from './models/ssh-execution-result';
 
 config();
 

@@ -1,4 +1,4 @@
-import { SshExecutionResult as SshExecutionResult } from '../../models/ssh-execution-result';
+import { SshExecutionResult } from '../../daemons/ssh-daemon/models/ssh-execution-result';
 
 export interface ShowExecutionResultViewProps {
   success: boolean;

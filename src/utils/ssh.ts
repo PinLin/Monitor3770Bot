@@ -1,7 +1,7 @@
 import { ChildProcess, fork } from 'child_process';
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
-import { SshExecutionResult } from '../models/ssh-execution-result';
+import { SshExecutionResult } from '../daemons/ssh-daemon/models/ssh-execution-result';
 
 const resultReceivedEvent = new EventEmitter();
 
