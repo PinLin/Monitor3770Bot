@@ -7,25 +7,29 @@ export interface ShowExecutionResultViewProps {
 }
 
 export function getShowExecutionResultView(props: ShowExecutionResultViewProps) {
-  let text: string;
-  if (props.success) {
-    text = "🖥️ 命令\n" +
-      "\n" +
-      `\`${props.command}\`\n` +
-      "\n" +
-      "STDOUT:\n" +
-      `\`${props.result.stdout}\`\n` +
-      "STDERR:\n" +
-      `\`${props.result.stderr}\`\n` +
-      "Code:\n" +
-      `\`${props.result.code}\`\n`;
-  } else {
-    text = "🖥️ 命令\n" +
-      "\n" +
-      `\`${props.command}\`\n` +
-      "\n" +
-      "命令執行失敗 ❌\n";
-  }
+  return { text: getText(props) };
+}
 
-  return { text };
+function getText(props: ShowExecutionResultViewProps) {
+  const builder = [] as string[];
+  builder.push("🖥️ 命令");
+  builder.push("");
+  builder.push(`\`${props.command}\``);
+  builder.push("");
+  if (props.success) {
+    builder.push("STDOUT:");
+    builder.push(`\`${props.result.stdout}\``);
+    builder.push("STDERR:");
+    builder.push(`\`${props.result.stderr}\``);
+    if (props.result.code != undefined) {
+      builder.push("Code:");
+      builder.push(`\`${props.result.code}\``);
+    } else {
+      builder.push("");
+      builder.push("命令執行逾時 ⚠️");
+    }
+  } else {
+    builder.push("命令執行失敗 ❌");
+  }
+  return builder.join('\n');
 }
