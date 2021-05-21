@@ -10,6 +10,11 @@ export class MachineService {
     public macAddress: string,
   ) { }
 
+  private sshWithUtf8(command: string) {
+    // 執行指令前先變更編碼為 UTF-8
+    return ssh('chcp 65001 & ' + command);
+  }
+
   async executeCommand(command: string) {
     console.log(`[MachineService] Executing command: ${command}...`);
 
@@ -96,7 +101,7 @@ export class MachineService {
     console.log("[MachineService] Getting online users...");
 
     try {
-      const { stdout } = await ssh('chcp 65001 & query user');
+      const { stdout } = await this.sshWithUtf8('query user');
 
       const userStrings = stdout.split('\r\n');
       userStrings.splice(0, 2);
