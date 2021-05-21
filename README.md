@@ -1,6 +1,7 @@
 # Monitor3770Bot
 
-透過 SSH 來管理目標電腦（目前僅支援 Windows）的 Telegram Bot
+透過 SSH 來管理遠端電腦的 Telegram Bot
+（目前僅支援 Windows）
 
 ## Demo
 
