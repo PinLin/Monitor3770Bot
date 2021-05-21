@@ -5,7 +5,7 @@ import { SshExecutionResult } from '../models/ssh-execution-result';
 
 const resultReceivedEvent = new EventEmitter();
 
-const executionQueue = [] as { uuid: string, command: string }[];
+const executionQueue = [] as { uuid: string, command: string, allocateTimeoutTimer: NodeJS.Timeout }[];
 
 let sshDaemonIsReady = false;
 let sshDaemon: ChildProcess;
@@ -18,7 +18,10 @@ let sshDaemon: ChildProcess;
     }
 
     if (executionQueue.length > 0) {
-      sshDaemon.send(JSON.stringify(executionQueue.shift()));
+      const { uuid, command, allocateTimeoutTimer } = executionQueue.shift();
+      // 解除指派逾時
+      clearTimeout(allocateTimeoutTimer);
+      sshDaemon.send(JSON.stringify({ uuid, command }));
     } else {
       sshDaemonIsReady = true;
     }
@@ -44,7 +47,16 @@ export function ssh(command: string): Promise<SshExecutionResult> {
       sshDaemonIsReady = false;
       sshDaemon.send(JSON.stringify({ uuid, command }));
     } else {
-      executionQueue.push({ uuid, command });
+      // 設定指派逾時
+      const allocateTimeoutTimer = setTimeout(() => {
+        const executionIndex = executionQueue.findIndex(execution => execution.uuid == uuid);
+        if (executionIndex != -1) {
+          executionQueue.splice(executionIndex, 1);
+        }
+        resultReceivedEvent.removeAllListeners(uuid);
+        rej("[SshUtil] Execution timed out.")
+      }, 1500);
+      executionQueue.push({ uuid, command, allocateTimeoutTimer });
     }
   });
 }
