@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { Client } from 'ssh2';
-import { execute } from './execute';
+import { SshExecutionResult } from '../../models/ssh-execution-result';
 
 config();
 
@@ -13,9 +13,26 @@ connection.on('ready', () => {
   process.on('message', async (message: string) => {
     const { uuid, command } = JSON.parse(message);
 
+    console.log('[SshDaemon] Execute command: ' + command);
+
     // 執行指令並回傳結果
-    const result = await execute(connection, command);
-    process.send(JSON.stringify({ uuid, result }));
+    connection.exec(command, (err, stream) => {
+      const result = {
+        code: NaN,
+        stdout: '',
+        stderr: '',
+      } as SshExecutionResult;
+
+      stream.on('close', (code) => {
+        // 回傳指令執行結果
+        result.code = code;
+        process.send(JSON.stringify({ uuid, result }));
+      }).stdout.on('data', (data) => {
+        result.stdout += data;
+      }).stderr.on('data', (data) => {
+        result.stderr += data;
+      });
+    });
   });
 
   // 準備接收要執行的指令
