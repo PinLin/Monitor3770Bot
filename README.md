@@ -5,7 +5,7 @@
 
 ## Demo
 
-![demo image](https://imgur.com/iZilozZ.jpg)
+![demo image](https://imgur.com/bWLmFNH.jpg)
 
 ## Usage
 
