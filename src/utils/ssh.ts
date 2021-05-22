@@ -48,7 +48,7 @@ export interface SshOptions {
 
 export function ssh(command: string, options?: SshOptions): Promise<SshExecutionResult> {
   return new Promise((res, rej) => {
-    const timeout = options?.timeout ?? 1500;
+    const timeout = options?.timeout ?? 3000;
     const independent = options?.independent ?? false;
     const uuid = uuidv4();
 
@@ -61,7 +61,7 @@ export function ssh(command: string, options?: SshOptions): Promise<SshExecution
       const allocateTimeoutTimer = setTimeout(() => {
         resultReceivedEvent.removeAllListeners(uuid);
         rej("[SshUtil] Allocation timed out.")
-      }, 5500);
+      }, 5000);
       const sshDaemonProcess = fork(__dirname + '/../daemons/ssh-daemon')
         .on('message', (message: string) => {
           const response = JSON.parse(message);
@@ -91,7 +91,7 @@ export function ssh(command: string, options?: SshOptions): Promise<SshExecution
       }
       resultReceivedEvent.removeAllListeners(uuid);
       rej("[SshUtil] Allocation timed out.")
-    }, 1500);
+    }, 1000);
     executionQueue.push({ uuid, command, timeout, allocateTimeoutTimer });
   });
 }
