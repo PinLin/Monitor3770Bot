@@ -19,7 +19,7 @@ export class MachineService {
     console.log(`[MachineService] Executing command: ${command}...`);
 
     try {
-      return await ssh(command);
+      return await ssh(command, { timeout: 0, independent: true });
     } catch (e) {
       console.log(e);
       return null;

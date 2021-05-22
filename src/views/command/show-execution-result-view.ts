@@ -21,13 +21,8 @@ function getText(props: ShowExecutionResultViewProps) {
     builder.push(`\`${props.result.stdout}\``);
     builder.push("STDERR:");
     builder.push(`\`${props.result.stderr}\``);
-    if (props.result.code != undefined) {
-      builder.push("Code:");
-      builder.push(`\`${props.result.code}\``);
-    } else {
-      builder.push("");
-      builder.push("命令執行逾時 ⚠️");
-    }
+    builder.push("Code:");
+    builder.push(`\`${props.result.code}\``);
   } else {
     builder.push("命令執行失敗 ❌");
   }
