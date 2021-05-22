@@ -9,32 +9,37 @@ const executionQueue = [] as {
   uuid: string, command: string, timeout: number, allocateTimeoutTimer: NodeJS.Timeout
 }[];
 
-let sshDaemonIsReady = false;
-let sshDaemon: ChildProcess;
-(function run() {
-  sshDaemon = fork(__dirname + '/../daemons/ssh-daemon');
-  sshDaemon.on('message', (message: string) => {
-    const response = JSON.parse(message);
-    if (response.uuid) {
-      resultReceivedEvent.emit(response.uuid, response.result);
-    }
+const sshDaemons = {} as { [index: number]: { isReady: boolean, process: ChildProcess } };
+for (let i = 0; i < 4; i++) {
+  sshDaemons[i] = {
+    isReady: false,
+    process: null,
+  };
+  (function run() {
+    sshDaemons[i].process = fork(__dirname + '/../daemons/ssh-daemon')
+      .on('message', (message: string) => {
+        const response = JSON.parse(message);
+        if (response.uuid) {
+          resultReceivedEvent.emit(response.uuid, response.result);
+        }
 
-    if (executionQueue.length > 0) {
-      const { uuid, command, timeout, allocateTimeoutTimer } = executionQueue.shift();
-      // 解除指派逾時
-      clearTimeout(allocateTimeoutTimer);
-      sshDaemon.send(JSON.stringify({ uuid, command, timeout }));
-    } else {
-      sshDaemonIsReady = true;
-    }
-  });
-  sshDaemon.on('exit', () => {
-    sshDaemonIsReady = false;
-    setTimeout(() => {
-      run();
-    }, 1000);
-  });
-})();
+        if (executionQueue.length > 0) {
+          const { uuid, command, timeout, allocateTimeoutTimer } = executionQueue.shift();
+          // 解除指派逾時
+          clearTimeout(allocateTimeoutTimer);
+          sshDaemons[i].process.send(JSON.stringify({ uuid, command, timeout }));
+        } else {
+          sshDaemons[i].isReady = true;
+        }
+      })
+      .on('exit', () => {
+        sshDaemons[i].isReady = false;
+        setTimeout(() => {
+          run();
+        }, 1000);
+      });
+  })();
+}
 
 export interface SshOptions {
   timeout?: number;
@@ -50,9 +55,10 @@ export function ssh(command: string, options?: SshOptions): Promise<SshExecution
       res(result);
     });
 
-    if (sshDaemonIsReady) {
-      sshDaemonIsReady = false;
-      sshDaemon.send(JSON.stringify({ uuid, command, timeout }));
+    const firstReadySshDaemon = Object.values(sshDaemons).find(daemon => daemon.isReady);
+    if (firstReadySshDaemon) {
+      firstReadySshDaemon.isReady = false;
+      firstReadySshDaemon.process.send(JSON.stringify({ uuid, command, timeout }));
     } else {
       // 設定指派逾時
       const allocateTimeoutTimer = setTimeout(() => {
